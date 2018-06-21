@@ -17,7 +17,12 @@
  * 
 */
 
+#ifndef ARRAY_CONTAINS_H
+#define ARRAY_CONTAINS_H
+
 #include <stdlib.h>
 #include <string.h>
 
 int array_contains(char* val, char** arr);
+
+#endif

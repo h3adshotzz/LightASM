@@ -17,6 +17,9 @@
  * 
 */
 
+#ifndef TOKEN_H
+#define TOKEN_H
+
 #include <stdlib.h>
 
 /*
@@ -56,3 +59,5 @@ typedef struct {
 Token* createToken(char* val, char type);
 TokenStream* createTokenStream(char* input);
 char* readString(TokenStream* stream, int (*reader)(char));
+
+#endif

@@ -20,7 +20,7 @@
 #include "interpreter.h"
 
 int get_reg_state(reg_t reg) {
-    if (reg >= 0 && reg <= 12) {
+    if (reg >= 0 && reg <= 11) {
         return register_state[reg];
     } else {
         return REGISTER_DEFAULT_VAL;

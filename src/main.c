@@ -66,7 +66,7 @@ int main(int argc, const char **argv) {
 	    } else if (!strcmp(main_arg, "-a") || !strcmp(main_arg, "--console")) {
             run();   // This is called from console.c
         } else if (!strcmp(main_arg, "--dev")) {
-	        testing();
+	        //testing();
 	    } else {
             printf("Unrecognised arg[s]. Please run with -h or --help for options.\n");
         }

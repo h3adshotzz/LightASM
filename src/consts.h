@@ -17,8 +17,8 @@
  * 
 */
 
-#ifndef consts_h
-#define consts_h
+#ifndef CONSTS_H
+#define CONSTS_H
 
 #define AQA_ASM_MAJOR_VERSION		1
 #define AQA_ASM_MINOR_VERSION		0
@@ -26,4 +26,4 @@
 
 #define DEBUG_MODE                  0
 
-#endif /* consts_h */
+#endif /* CONSTS_H */

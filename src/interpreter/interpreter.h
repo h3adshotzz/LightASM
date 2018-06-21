@@ -19,7 +19,7 @@
 
 #include <stdio.h>
 
-#define REGISTER_COUNT  13  // Array shit
+#define REGISTER_COUNT  12  // Array shit
 #define REGISTER_DEFAULT_VAL    -1
 
 typedef enum {
@@ -34,8 +34,7 @@ typedef enum {
     REGISTER_R8 = 8,
     REGISTER_R9 = 9,
     REGISTER_R10 = 10,
-    REGISTER_R11 = 11,
-    REGISTER_R12 = 12
+    REGISTER_R11 = 11
 } reg_t;
 
-int register_state[REGISTER_COUNT] = {0,1,2,3,4,5,6,7,8,9,10,11,12};
+int register_state[REGISTER_COUNT] = {0,1,2,3,4,5,6,7,8,9,10,11};

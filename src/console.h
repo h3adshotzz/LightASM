@@ -17,6 +17,9 @@
  * 
 */
 
+#ifndef CONSOLE_H
+#define CONSOLE_H
+
 #include <stdio.h>
 #include <string.h>
 
@@ -24,3 +27,5 @@
 #include "token.h"
 
 void run();
+
+#endif

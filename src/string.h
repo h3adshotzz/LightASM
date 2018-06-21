@@ -17,6 +17,9 @@
  * 
 */
 
+#ifndef STRING_H
+#define STRING_H
+
 #include <string.h>
 #include <stdlib.h>
 
@@ -26,3 +29,5 @@
 
 char *strappend(char *a, char *b);
 char *chrappend(char *a, char b);
+
+#endif
