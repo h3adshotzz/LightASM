@@ -104,6 +104,8 @@ int is_keyword(char* x) {
 }
 
 Token* nextToken(TokenStream* tknstr, TknError** err) {
+    // Skip spaces, tabs & newlines ext
+    readString(tknstr, &isspace);
 
     // Peek at the next letter
     char next_char = tknstr->source[tknstr->position];
@@ -152,4 +154,33 @@ Token* nextToken(TokenStream* tknstr, TknError** err) {
     // MOV  R5, #22     Moving a number
     // MOV  R2, 231     Moving memory
 
+}
+
+void token_dump (Token* self) {
+    if (!self) {
+        debugf("TOKEN: self is null");
+        return;
+    }
+    switch (self->type) {
+        case TOK_COMMAND:
+            debugf("TOKEN: Command: %s", self->val);
+            break;
+        case TOK_NUMBER:
+            debugf("TOKEN: Number: %s", self->val);
+            break;
+        case TOK_MEMORY:
+            debugf("TOKEN: Memory: %s", self->val);
+            break;
+        case TOK_REGISTER:
+            debugf("TOKEN: Register: %s", self->val);
+            break;
+        case TOK_LABEL:
+            debugf("TOKEN: Label: %s", self->val);
+            break;
+        case TOK_COMMA:
+            debugf("TOKEN: Comma");
+            break;
+        default:
+            debugf("TOKEN: Unknown type");
+    }
 }

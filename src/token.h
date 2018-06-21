@@ -64,5 +64,6 @@ typedef struct {
 Token* createToken(char* val, char type);
 TokenStream* createTokenStream(char* input);
 Token* nextToken(TokenStream* tknstr, TknError** err);
+void token_dump (Token* self);
 
 #endif
