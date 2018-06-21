@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/obj/lightasmcore.o",
-            "args": ["--de"],
+            "args": ["--ded"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

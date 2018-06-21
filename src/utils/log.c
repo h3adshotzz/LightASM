@@ -37,18 +37,18 @@ int __printlnf(msg_type msgType, char *fmt, ...) {
 
     // Append what is needed depending on msg_type
     if (msgType == LOG_PRINTLN) {
-        fmt = strappend(fmt, "\n");
+        fmt = chrappend(fmt, '\n');
     } else if (msgType == LOG_ERROR) {
-        fmt = mstrappend("%s%s%s", ANSI_COLOR_RED "!ERROR! ", fmt, " !ERROR!" ANSI_COLOR_RED ANSI_COLOR_RESET "\n");
+        fmt = mstrappend(3, ANSI_COLOR_RED "[Error] ", fmt, ANSI_COLOR_RED ANSI_COLOR_RESET "\n");
     } else if (msgType == LOG_WARNING) {
-        fmt = mstrappend("%s%s%s", ANSI_COLOR_YELLOW "!WARNING! ", fmt, " !WARNING!" ANSI_COLOR_YELLOW ANSI_COLOR_RESET "\n");        
+        fmt = mstrappend(3, ANSI_COLOR_YELLOW "[Warning] ", fmt, ANSI_COLOR_YELLOW ANSI_COLOR_RESET "\n");        
     } else if (msgType == LOG_DEBUG) {
         // make sure debug is set
         if (DEBUG_MODE) {
             // If should_debug() was 0, then just return
             return 1;
         }
-        fmt = mstrappend("%s%s%s", ANSI_COLOR_BLUE "DEBUG: ", fmt, ANSI_COLOR_BLUE ANSI_COLOR_RESET "\n");        
+        fmt = mstrappend(3, ANSI_COLOR_BLUE "[Debug] ", fmt, ANSI_COLOR_BLUE ANSI_COLOR_RESET "\n");        
     }
 
     // Initialize a variable argument list with arg & fmt

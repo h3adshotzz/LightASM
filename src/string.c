@@ -78,17 +78,16 @@ char *chrappend(char *a, char b) {
  * 
  * Returns a new string
  */
-char *mstrappend(char *toap, ...) {
+char *mstrappend(size_t count, ...) {
     
     // Create a va_list, char* and size_t
     va_list arg;                        // va_list arguments
     char *rt;                           // string to return
-    size_t count = strlen(toap) / 2;    // amount of parameters given
     size_t len = 0;                     // length of all the parameters together
     char *content[count];               // array to hold each parameter from va_arg()
     
     // Initialise the va list
-    va_start(arg, toap);     
+    va_start(arg, count);     
             
     // If there are enough args to continue
     if (count > 1) {

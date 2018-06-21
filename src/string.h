@@ -32,5 +32,6 @@
 
 char *strappend(char *a, char *b);
 char *chrappend(char *a, char b);
+char *mstrappend(size_t count, ...);
 
 #endif

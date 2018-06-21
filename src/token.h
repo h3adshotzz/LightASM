@@ -21,6 +21,10 @@
 #define TOKEN_H
 
 #include <stdlib.h>
+#include <ctype.h>
+
+#include "string.h"
+#include "array_contains.h"
 
 /*
     Token Types
@@ -50,6 +54,10 @@ typedef struct {
     char* source;       // The users input, what we are token...ing
     Token* cache;       // Token cache
 } TokenStream;
+
+typedef struct {
+    char* msg;
+} Err;
 
 // @zistooshort tried to explain this to me but me no get it :(
 // Apparently it defines a type (Reader) which is a pointer to a function which takes char and returns bool.

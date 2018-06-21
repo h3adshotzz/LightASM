@@ -100,6 +100,16 @@ char* readString(TokenStream* stream, int (*reader)(char)) {
 /**
  *  Check whether given 'x' is a keyword
  */
-int is_keyword(TokenStream* tok, char* x) {
+int is_keyword(char* x) {
     return array_contains(x, keywords);
+}
+
+Token* nextToken(TokenStream* tknstr, Err** err) {
+
+    char next_char = tknstr->source[tknstr->position];
+    
+    if (isalpha(next_char)) {
+       //readString();
+    }
+
 }

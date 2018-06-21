@@ -24,9 +24,12 @@
  */
 void run() {
 
+    debugf("Starting LightASM Console...");
+    warningf("This is still experimental. Errors may occur");
+
     // We run until we're given the notice.
     int repeat = 1;
-    char *curline;  
+    char *curline = NULL;  
 
     while(repeat) {
 
@@ -38,6 +41,7 @@ void run() {
         if (strcmp(curline, "Quit") == 0) {
             printf("You asked to quit!\n");
             repeat = 0;
+            exit(0);
         } else {
 
             // We didn't ask to quit/

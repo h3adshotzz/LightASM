@@ -27,6 +27,12 @@
 #include "string.h"
 #include "utils/log.h"
 
+void testing() {
+
+    warningf("This is experimental. Crashes are expected.");
+
+}
+
 void version() {
     printf("AQAAssembly %d.%d [%d]\n\n", AQA_ASM_MAJOR_VERSION, AQA_ASM_MINOR_VERSION, AQA_ASM_BUILD);
 }
@@ -53,7 +59,7 @@ int main(int argc, const char **argv) {
 #endif
 
 	// See what we are dealing with
-    char* main_arg = argv[1];
+    const char* main_arg = argv[1];
 
 #if DEBUG_MODE
     printf("main arg: %s\n", main_arg);
@@ -67,10 +73,10 @@ int main(int argc, const char **argv) {
 	    } else if (!strcmp(main_arg, "-a") || !strcmp(main_arg, "--console")) {
             run();   // This is called from console.c
         } else if (!strcmp(main_arg, "--dev")) {
-	        //testing();
+	        testing();
 	    } else {
-            //errorf("Unrecognised arg[s]. Please run with -h or --help for options.\n");
-            printf("Unrecognised arg[s]. Please run with -h or --help for options.\n");
+            errorf("Unrecognised arg[s]. Please run with -h or --help for options.\n");
+            //printf("Unrecognised arg[s]. Please run with -h or --help for options.\n");
         }
     } else {
         printf("No options given. Please run with -h or --help for options.\n");
