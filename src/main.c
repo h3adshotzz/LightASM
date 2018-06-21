@@ -25,6 +25,7 @@
 #include "console.h"
 #include "token.h"
 #include "string.h"
+#include "utils/log.h"
 
 void version() {
     printf("AQAAssembly %d.%d [%d]\n\n", AQA_ASM_MAJOR_VERSION, AQA_ASM_MINOR_VERSION, AQA_ASM_BUILD);
@@ -68,6 +69,7 @@ int main(int argc, const char **argv) {
         } else if (!strcmp(main_arg, "--dev")) {
 	        //testing();
 	    } else {
+            //errorf("Unrecognised arg[s]. Please run with -h or --help for options.\n");
             printf("Unrecognised arg[s]. Please run with -h or --help for options.\n");
         }
     } else {

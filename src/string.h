@@ -22,6 +22,9 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdarg.h>
+
+#include "utils/log.h"
 
 /*typedef struct {
     char* string;

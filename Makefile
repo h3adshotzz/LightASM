@@ -5,7 +5,8 @@ CORE_SOURCES =						\
 	src/token.c 						\
 	src/string.c 						\
 	src/console.c						\
-	src/array_contains.c 	
+	src/array_contains.c 				\
+	src/utils/log.c
 INTERPRETER_SOURCES =					\
 	src/interpreter/interpreter.c	
 CC		= gcc

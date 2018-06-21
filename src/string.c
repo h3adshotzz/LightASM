@@ -67,3 +67,63 @@ char *chrappend(char *a, char b) {
     // Return the new string
     return result;
 }
+
+
+/**
+ * Append multiple strings together
+ * 
+ * toap - strings to append together
+ * 
+ * Usage: mstrappend("%s%s%s", str1, str2, "str3");
+ * 
+ * Returns a new string
+ */
+char *mstrappend(char *toap, ...) {
+    
+    // Create a va_list, char* and size_t
+    va_list arg;                        // va_list arguments
+    char *rt;                           // string to return
+    size_t count = strlen(toap) / 2;    // amount of parameters given
+    size_t len = 0;                     // length of all the parameters together
+    char *content[count];               // array to hold each parameter from va_arg()
+    
+    // Initialise the va list
+    va_start(arg, toap);     
+            
+    // If there are enough args to continue
+    if (count > 1) {
+        for (int i = 0; i < count; i++) {
+            // assign va_arg to a temp var
+            char *tmp = va_arg(arg, char*);
+            /* assign len as the current value + length of current value of tmp
+                this is to get the full amount of characters in the final
+                appended string */
+            len = len + strlen(tmp);
+            // set i on content to value of tmp
+            content[i] = tmp;
+        }
+    
+        // allocated enough bytes in rt for all contents values + a null byte
+        rt = malloc(len + 1);
+        for (int i = 0; i < count; i++) {
+            // append content at i to rt
+            rt = strappend(rt, content[i]);
+        }
+    
+    } else {
+        // Not enough args to continue, present error
+        errorf("Not enough args given");
+        // Return with NULL to prevent continuation and SEGFAULT
+        return NULL;
+    }
+    
+    // append a Null byte to the end of rt
+    rt = strappend(rt, "\0");
+    
+    // Stop the va_list
+    va_end(arg);
+            
+    // Return the newly appended string
+    return rt;
+        
+}
