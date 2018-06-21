@@ -35,7 +35,7 @@ void testing() {
     TokenError *err = NULL;
     Token *tkn = NULL;
     
-    while ((tkn = create_new_token(tknstr, &err))) {
+    while ((tkn = create_new_token(tknstr->source, &err))) {
         printf("THERE BE TKN\n");
         if (err != NULL) {
             printf("error there be\n");
