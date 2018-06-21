@@ -76,9 +76,6 @@ char* readString(TokenStream* stream, int (*reader)(char)) {
 
         // Get the current char
         char curr = stream->source[counter]; 
-    
-        // Advance the counter
-        counter++;
 
         // If the character is acceptable, append. Else, You end up in ze cooler. 
         if (reader(curr)) {
@@ -87,6 +84,8 @@ char* readString(TokenStream* stream, int (*reader)(char)) {
             break;
         }
 
+        // Advance the counter
+        counter++;
     }
 
     // Store the new position
@@ -104,12 +103,53 @@ int is_keyword(char* x) {
     return array_contains(x, keywords);
 }
 
-Token* nextToken(TokenStream* tknstr, Err** err) {
+Token* nextToken(TokenStream* tknstr, TknError** err) {
 
+    // Peek at the next letter
     char next_char = tknstr->source[tknstr->position];
     
-    if (isalpha(next_char)) {
-       //readString();
+    // check is char is a register
+    if (!next_char) {
+        return NULL;
+    } else if (next_char == 'R') {
+         
+        tknstr->position++;
+        char* str = readString(tknstr, &isnumber);
+        return createToken(str, TOK_REGISTER);
+
+    } else if (isalpha(next_char)) {    // Check wether the char is a command
+
+        // If the char is an alpha, send it to readString.
+        char* str = readString(tknstr, &isalpha);
+
+        if (is_keyword(str)) {
+            return createToken(str, TOK_COMMAND);       // Return a command token
+        } else {
+            return createToken(str, TOK_LABEL);         // Return a label token
+        }
+
+    } else if (next_char == '#') {      // A number is next
+
+        tknstr->position++;
+        char* str = readString(tknstr, &isnumber);
+        return createToken(str, TOK_NUMBER);
+
+    } else if (next_char == ',') {  // if next char is a comma
+
+        tknstr->position++;
+        return createToken(NULL, TOK_COMMA);
+
+    } else if (isnumber(next_char)) {
+
+        char* str = readString(tknstr, &isnumber);
+        return createToken(str, TOK_MEMORY);
+
+    } else {
+        *err = throw_token_error("Invalid input");
+        return NULL;
     }
+
+    // MOV  R5, #22     Moving a number
+    // MOV  R2, 231     Moving memory
 
 }

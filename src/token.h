@@ -25,6 +25,7 @@
 
 #include "string.h"
 #include "array_contains.h"
+#include "utils/error.h"
 
 /*
     Token Types
@@ -55,10 +56,6 @@ typedef struct {
     Token* cache;       // Token cache
 } TokenStream;
 
-typedef struct {
-    char* msg;
-} Err;
-
 // @zistooshort tried to explain this to me but me no get it :(
 // Apparently it defines a type (Reader) which is a pointer to a function which takes char and returns bool.
 //typedef bool (*Reader)(char);
@@ -66,6 +63,6 @@ typedef struct {
 // Functions. They are commented in token.c
 Token* createToken(char* val, char type);
 TokenStream* createTokenStream(char* input);
-char* readString(TokenStream* stream, int (*reader)(char));
+Token* nextToken(TokenStream* tknstr, TknError** err);
 
 #endif

@@ -6,7 +6,8 @@ CORE_SOURCES =						\
 	src/string.c 						\
 	src/console.c						\
 	src/array_contains.c 				\
-	src/utils/log.c
+	src/utils/log.c						\
+	src/utils/error.c
 INTERPRETER_SOURCES =					\
 	src/interpreter/interpreter.c	
 CC		= gcc

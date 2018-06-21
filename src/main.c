@@ -31,6 +31,29 @@ void testing() {
 
     warningf("This is experimental. Crashes are expected.");
 
+    TokenStream *tknstr = createTokenStream("MOV R5, #22");
+    TknError *err = NULL;
+    Token *tkn = NULL;
+    
+    while ((tkn = nextToken(tknstr, &err))) {
+        printf("THERE BE TKN\n");
+        if (err != NULL) {
+            printf("error there be\n");
+            tkn_error_print(err);
+        } else {
+            printf("No error there be\n");
+            if (tkn->type != TOK_COMMAND) {
+                errorf("Expected Token Type 'TOK_COMMAND'");
+            }
+
+            if (strcmp(tkn->val, "MOV") != 0) {
+                errorf("Expected 'MOV'");
+            }
+
+        }
+    }
+    printf("While Done\n");
+
 }
 
 void version() {

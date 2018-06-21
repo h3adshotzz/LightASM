@@ -49,23 +49,14 @@ char *strappend(char *a, char *b) {
 }
 
 char *chrappend(char *a, char b) {
-    // Get the length of a & b
-    size_t a_len = strlen(a);
-    // Create a string for the length of a + b with
-    // an extra byte for NULL termination
-    char *result = malloc(a_len + 2);
-    // If result is empty, a & b were probably empty
-    if (!result)
-        // So return NULL
-        return NULL;
-    // Copy the length of a bytes of a into result
-    memcpy(result, a, a_len);
-
-    // Coppy b to the array at a_len + 1
-    result[a_len + 1] = b;
-    result[a_len + 2] = '\0';
+    // The result will be long (ch + NULL)
+    char *result = malloc(2);
+    // Copy 1 byte from a refrence to ch into result
+    memcpy(result, &b, 1);
+    // NULL termination of the string
+    result[1] = '\0';
     // Return the new string
-    return result;
+    return strappend(a, result);
 }
 
 
