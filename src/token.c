@@ -65,7 +65,7 @@ TokenStream* createTokenStream(char* input) {
 /**
  *  Some complaints about this in token.h...
  */
-char* readString(TokenStream* stream, int (*reader)(char)) {
+char* readString(TokenStream* stream, int (*reader)(int)) {
 
     // Result string and counter
     char* str = "";
@@ -114,7 +114,7 @@ Token* nextToken(TokenStream* tknstr, TknError** err) {
     } else if (next_char == 'R') {
          
         tknstr->position++;
-        char* str = readString(tknstr, &isnumber);
+        char* str = readString(tknstr, &isdigit);
         return createToken(str, TOK_REGISTER);
 
     } else if (isalpha(next_char)) {    // Check wether the char is a command
@@ -131,7 +131,7 @@ Token* nextToken(TokenStream* tknstr, TknError** err) {
     } else if (next_char == '#') {      // A number is next
 
         tknstr->position++;
-        char* str = readString(tknstr, &isnumber);
+        char* str = readString(tknstr, &isdigit);
         return createToken(str, TOK_NUMBER);
 
     } else if (next_char == ',') {  // if next char is a comma
@@ -139,9 +139,9 @@ Token* nextToken(TokenStream* tknstr, TknError** err) {
         tknstr->position++;
         return createToken(NULL, TOK_COMMA);
 
-    } else if (isnumber(next_char)) {
+    } else if (isdigit(next_char)) {
 
-        char* str = readString(tknstr, &isnumber);
+        char* str = readString(tknstr, &isdigit);
         return createToken(str, TOK_MEMORY);
 
     } else {
