@@ -47,7 +47,7 @@ void run() {
             // We didn't ask to quit/
             printf("Input: %s\n", curline);
 
-            TokenStream* tokStream = createTokenStream(curline);
+            TokenStream* tokStream = create_new_token_stream(curline);
 
         }
     }

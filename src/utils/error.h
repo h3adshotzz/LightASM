@@ -24,9 +24,9 @@
 
 typedef struct {
     char* msg;
-} TknError;
+} TokenError;
 
-void tkn_error_print(TknError* e);
-TknError* throw_token_error(char* msg);
+void tkn_error_print(TokenError* e);
+TokenError* throw_token_error(char* msg);
 
 #endif

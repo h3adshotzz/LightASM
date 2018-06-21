@@ -19,15 +19,15 @@
 
 #include "error.h"
 
-TknError* throw_token_error(char* msg) {
+TokenError* throw_token_error(char* msg) {
 
-    TknError* tknerr = malloc(sizeof(TknError));
+    TokenError* tknerr = malloc(sizeof(TokenError));
     tknerr->msg = msg;
 
     return tknerr;
 
 } 
 
-void tkn_error_print(TknError* e) {
+void tkn_error_print(TokenError* e) {
     errorf("Thrown: %s", e->msg);
 }
