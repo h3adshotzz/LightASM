@@ -103,20 +103,21 @@ int is_keyword(char* x) {
     return array_contains(x, g_keywords);
 }
 
-Token* next_token(TokenStream* tknstr, TokenError** err) {
 
+Token* next_token(TokenStream* tknstr, TknError** err) {
+
+    // Skip spaces, tabs & newlines ext
+    read_token_string(tknstr, &isspace);
+  
     // Peek at the next letter
-    char next_char = tknstr->source[tknstr->position];
-    
-    // check is char is a register
     if (!next_char) {
-        return NULL;
+        return NULL; 
     } else if (next_char == 'R') {
-         
+        
         tknstr->position++;
-        char* str = read_token_string(tknstr, &isnumber);
+        char* str = read_token_string(tknstr, &isdigit);
         return create_new_token(str, TOK_REGISTER);
-
+      
     } else if (isalpha(next_char)) {    // Check wether the char is a command
 
         // If the char is an alpha, send it to read_token_string.
@@ -139,7 +140,7 @@ Token* next_token(TokenStream* tknstr, TokenError** err) {
         tknstr->position++;
         return create_new_token(NULL, TOK_COMMA);
 
-    } else if (isnumber(next_char)) {
+    } else if (isdigit(next_char)) {
 
         char* str = read_token_string(tknstr, &isnumber);
         return create_new_token(str, TOK_MEMORY);
@@ -152,4 +153,33 @@ Token* next_token(TokenStream* tknstr, TokenError** err) {
     // MOV  R5, #22     Moving a number
     // MOV  R2, 231     Moving memory
 
+}
+
+void token_dump (Token* self) {
+    if (!self) {
+        debugf("TOKEN: self is null");
+        return;
+    }
+    switch (self->type) {
+        case TOK_COMMAND:
+            debugf("TOKEN: Command: %s", self->val);
+            break;
+        case TOK_NUMBER:
+            debugf("TOKEN: Number: %s", self->val);
+            break;
+        case TOK_MEMORY:
+            debugf("TOKEN: Memory: %s", self->val);
+            break;
+        case TOK_REGISTER:
+            debugf("TOKEN: Register: %s", self->val);
+            break;
+        case TOK_LABEL:
+            debugf("TOKEN: Label: %s", self->val);
+            break;
+        case TOK_COMMA:
+            debugf("TOKEN: Comma");
+            break;
+        default:
+            debugf("TOKEN: Unknown type");
+    }
 }

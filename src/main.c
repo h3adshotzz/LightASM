@@ -35,25 +35,13 @@ void testing() {
     TokenError *err = NULL;
     Token *tkn = NULL;
     
-    while ((tkn = create_new_token(tknstr->source, &err))) {
-        printf("THERE BE TKN\n");
-        if (err != NULL) {
-            printf("error there be\n");
-            tkn_error_print(err);
-        } else {
-            printf("No error there be\n");
-            if (tkn->type != TOK_COMMAND) {
-                errorf("Expected Token Type 'TOK_COMMAND'");
-            }
-
-            if (strcmp(tkn->val, "MOV") != 0) {
-                errorf("Expected 'MOV'");
-            }
-
-        }
+    while ((tkn = next_token(tknstr, &err))) {
+        token_dump(tkn); 
     }
-    printf("While Done\n");
 
+    if (err != NULL) {
+        tkn_error_print(err);
+    }
 }
 
 void version() {
@@ -107,6 +95,4 @@ int main(int argc, const char **argv) {
     }
     
     return 0;
-	
 }
-

@@ -1,33 +1,50 @@
-TARGET 	= lightasm
-OBJDIR	= obj/
-CORE_SOURCES =						\
-	src/main.c 							\
-	src/token.c 						\
-	src/string.c 						\
-	src/console.c						\
-	src/array_contains.c 				\
-	src/utils/log.c						\
-	src/utils/error.c
-INTERPRETER_SOURCES =					\
-	src/interpreter/interpreter.c	
+TARGET	= lightasm
+SRCDIR	= src
+OBJDIR	= obj
+
 CC		= gcc
-CFLAGS	= -g -Wall -o
+CFLAGS	= -g -Wall
 
-all:
-	$(CC) $(CORE_SOURCES) $(CFLAGS) $(OBJDIR)lightasmcore.o
-	$(CC) $(INTERPRETER_SOURCES) $(CFLAGS) $(OBJDIR)interpreter.o		
+LIB_SOURCES =							\
+	token.c 							\
+	string.c 							\
+	console.c							\
+	array_contains.c 					\
+	utils/log.c							\
+	utils/error.c						
 
-	# These two should eventually be linked to form the exec LightASM
-	# Also i want to make the terminal output look nicer. IDK how.
+TEST_SOURCES = 							\
+	main.c								
 
-core:
-	$(CC) $(CORE_SOURCES) $(CFLAGS) $(OBJDIR)lightasmcore.o
+INTERPRETER_SOURCES =					\
+	interpreter/interpreter.c			
 
-interpreter:
-	$(CC) $(INTERPRETER_SOURCES) $(CFLAGS) $(OBJDIR)interpreter.o
+LIB_OBJECTS=$(LIB_SOURCES:%.c=$(OBJDIR)/%.o)
+TEST_OBJECTS=$(TEST_SOURCES:%.c=$(OBJDIR)/%.o)
+INTERPRETER_OBJECTS=$(INTERPRETER_SOURCES:%.c=$(OBJDIR)/%.o)
+
+LIB = $(OBJDIR)/liblightasmcore.a
+LIBFLAGS = -L$(OBJDIR) -llightasmcore
+
+all: outdir $(OBJDIR)/test $(OBJDIR)/lightasm
+
+outdir:
+	@mkdir -p $(OBJDIR)
+	@mkdir -p $(OBJDIR)/utils
+	@mkdir -p $(OBJDIR)/interpreter
+
+# Build all the c files
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
+	$(CC) -c $< $(CFLAGS) -o $@
+
+$(LIB): $(LIB_OBJECTS)
+	ar rcs $@ $(LIB_OBJECTS)
+
+$(OBJDIR)/test: $(TEST_OBJECTS) $(LIB)
+	$(CC) $(TEST_OBJECTS) $(CFLAGS) $(LIBFLAGS) -o $@
+
+$(OBJDIR)/lightasm: $(INTERPRETER_OBJECTS) $(LIB)
+	$(CC) $(INTERPRETER_OBJECTS) $(CFLAGS) $(LIBFLAGS) -o $@
 
 clean:
-	rm -rf obj/*
-
-
-
+	@rm -rf obj/*
