@@ -104,12 +104,14 @@ int is_keyword(char* x) {
 }
 
 
-Token* next_token(TokenStream* tknstr, TknError** err) {
+Token* next_token(TokenStream* tknstr, TokenError** err) {
 
     // Skip spaces, tabs & newlines ext
     read_token_string(tknstr, &isspace);
   
     // Peek at the next letter
+    char next_char = tknstr->source[tknstr->position];
+
     if (!next_char) {
         return NULL; 
     } else if (next_char == 'R') {
