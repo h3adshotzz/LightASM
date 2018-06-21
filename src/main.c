@@ -31,12 +31,12 @@ void testing() {
 
     warningf("This is experimental. Crashes are expected.");
 
-    TokenStream *tknstr = createTokenStream("MOV R5, #22");
-    TknError *err = NULL;
+    TokenStream *tknstr = create_new_token_stream("MOV R5, #22");
+    TokenError *err = NULL;
     Token *tkn = NULL;
     
-    while ((tkn = nextToken(tknstr, &err))) {
-        token_dump(tkn);
+    while ((tkn = next_token(tknstr, &err))) {
+        token_dump(tkn); 
     }
 
     if (err != NULL) {
@@ -45,12 +45,12 @@ void testing() {
 }
 
 void version() {
-    printf("AQAAssembly %d.%d [%d]\n\n", AQA_ASM_MAJOR_VERSION, AQA_ASM_MINOR_VERSION, AQA_ASM_BUILD);
+    printf("LightASM %d.%d [%d]\n\n", AQA_ASM_MAJOR_VERSION, AQA_ASM_MINOR_VERSION, AQA_ASM_BUILD);
 }
 
 void help_menu() {
 	
-	printf("Usage:	AQAAssembly [OPTIONS] [FILE]...\n\n");
+	printf("Usage:	LightASM [OPTIONS] [FILE]...\n\n");
 	printf("Option			GNU Long Option			Meaning\n");
 	printf("-h, -?			--help				Show this message\n");
 	printf("-v			--version			Show the version and build\n");

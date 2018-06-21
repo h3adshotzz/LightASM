@@ -61,9 +61,9 @@ typedef struct {
 //typedef bool (*Reader)(char);
 
 // Functions. They are commented in token.c
-Token* createToken(char* val, char type);
-TokenStream* createTokenStream(char* input);
-Token* nextToken(TokenStream* tknstr, TknError** err);
+Token* create_new_token(char* val, char type);
+TokenStream* create_new_token_stream(char* input);
+Token* next_token(TokenStream* tknstr, TokenError** err);
 void token_dump (Token* self);
 
 #endif

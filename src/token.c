@@ -23,13 +23,13 @@
 /**
  * LightASM Keywords
  */
-char* keywords[] = {"MOV", "SUB"};
+char* g_keywords[] = {"MOV", "SUB"};
 
 
 /**
  * Function to create a new Token
  */
-Token* createToken(char* val, char type) {
+Token* create_new_token(char* val, char type) {
 
     // Malloc's our friend. 
     Token* tol = malloc(sizeof(Token));
@@ -47,7 +47,7 @@ Token* createToken(char* val, char type) {
 /**
  * Function to create a new TokenStream
  */
-TokenStream* createTokenStream(char* input) {
+TokenStream* create_new_token_stream(char* input) {
 
     // Hello Bosssss, can i haz memz? 
     TokenStream* stream = malloc(sizeof(TokenStream));
@@ -65,7 +65,7 @@ TokenStream* createTokenStream(char* input) {
 /**
  *  Some complaints about this in token.h...
  */
-char* readString(TokenStream* stream, int (*reader)(int)) {
+char* read_token_string(TokenStream* stream, int (*reader)(char)) {
 
     // Result string and counter
     char* str = "";
@@ -100,51 +100,50 @@ char* readString(TokenStream* stream, int (*reader)(int)) {
  *  Check whether given 'x' is a keyword
  */
 int is_keyword(char* x) {
-    return array_contains(x, keywords);
+    return array_contains(x, g_keywords);
 }
 
-Token* nextToken(TokenStream* tknstr, TknError** err) {
+
+Token* next_token(TokenStream* tknstr, TknError** err) {
+
     // Skip spaces, tabs & newlines ext
-    readString(tknstr, &isspace);
-
+    read_token_string(tknstr, &isspace);
+  
     // Peek at the next letter
-    char next_char = tknstr->source[tknstr->position];
-    
-    // check is char is a register
     if (!next_char) {
-        return NULL;
+        return NULL; 
     } else if (next_char == 'R') {
-         
+        
         tknstr->position++;
-        char* str = readString(tknstr, &isdigit);
-        return createToken(str, TOK_REGISTER);
-
+        char* str = read_token_string(tknstr, &isdigit);
+        return create_new_token(str, TOK_REGISTER);
+      
     } else if (isalpha(next_char)) {    // Check wether the char is a command
 
-        // If the char is an alpha, send it to readString.
-        char* str = readString(tknstr, &isalpha);
+        // If the char is an alpha, send it to read_token_string.
+        char* str = read_token_string(tknstr, &isalpha);
 
         if (is_keyword(str)) {
-            return createToken(str, TOK_COMMAND);       // Return a command token
+            return create_new_token(str, TOK_COMMAND);       // Return a command token
         } else {
-            return createToken(str, TOK_LABEL);         // Return a label token
+            return create_new_token(str, TOK_LABEL);         // Return a label token
         }
 
     } else if (next_char == '#') {      // A number is next
 
         tknstr->position++;
-        char* str = readString(tknstr, &isdigit);
-        return createToken(str, TOK_NUMBER);
+        char* str = read_token_string(tknstr, &isnumber);
+        return create_new_token(str, TOK_NUMBER);
 
     } else if (next_char == ',') {  // if next char is a comma
 
         tknstr->position++;
-        return createToken(NULL, TOK_COMMA);
+        return create_new_token(NULL, TOK_COMMA);
 
     } else if (isdigit(next_char)) {
 
-        char* str = readString(tknstr, &isdigit);
-        return createToken(str, TOK_MEMORY);
+        char* str = read_token_string(tknstr, &isnumber);
+        return create_new_token(str, TOK_MEMORY);
 
     } else {
         *err = throw_token_error("Invalid input");
