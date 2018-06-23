@@ -29,13 +29,21 @@ void console_run() {
 
     // We run until we're given the notice.
     int repeat = 1;
+
+    /**
+     * Strangely, If this is left NULL we get a seg fault. If we malloc 14
+     * bytes, it works perfectly, even if you input 120 chars.
+     * 
+     * I assumed 14 bytes because asm commands shoudln't be longer than that.
+     * Atleast in AQA's spec.
+     */
     char *curline = malloc(14);  
 
     while(repeat) {
 
         // Get input
         printf("-> ");
-        scanf("%[^\n]%*c", curline);    // SEGFAULT EXEC_BAD_ACCESS
+        scanf("%[^\n]%*c", curline);  
 
         // Check if the user asked to cancel.
         if (strcmp(curline, "Quit") == 0) {
