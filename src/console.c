@@ -29,13 +29,13 @@ void console_run() {
 
     // We run until we're given the notice.
     int repeat = 1;
-    char *curline = NULL;  
+    char *curline = malloc(14);  
 
     while(repeat) {
 
         // Get input
         printf("-> ");
-        scanf("%[^\n]%*s", curline);    // SEGFAULT EXEC_BAD_ACCESS
+        scanf("%[^\n]%*c", curline);    // SEGFAULT EXEC_BAD_ACCESS
 
         // Check if the user asked to cancel.
         if (strcmp(curline, "Quit") == 0) {
