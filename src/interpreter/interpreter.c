@@ -47,18 +47,51 @@ void display_regs() {
 
 int main(int argc, char* argv[]) {
     
-    printf("Example of the following code.\n\nMOV R4, #22\n\n");
+    TokenStream* tok_stream = create_new_token_stream("MOV R2, #22");
+    TokenError* err = NULL;
+    Token* tkn = NULL;
 
-    printf("Access the current state of R4: %d\n", get_reg_state(REGISTER_R4));
-    printf("Move the value 22 into R4...");
+    //node_type *n_type = NULL;
+    //node_op_type *n_op_type = NULL;
 
-    set_new_reg_state(REGISTER_R4, 22);
+    while ((tkn = next_token(tok_stream, &err))) {
+        token_dump(tkn);
 
-    printf("Done!\n");
+        char type = tkn->type;
 
-    printf("Access the new state of R4: %d\n", get_reg_state(REGISTER_R4));
+        if (type == TOK_COMMAND) {
 
-    printf("Done. We moved 22 into R4.\n");
+            debugf("Token is a command");
+            //n_type = NTYPE_MOV;
+
+        } else if (type == TOK_REGISTER) {
+
+            debugf("Token is a register");
+            //n_op_type = NOP_REGISTER;
+
+        } else if (type == TOK_NUMBER) {
+
+            debugf("Token is a number");
+            //n_op_type = NOP_LITERAL;
+
+        } else if (type == TOK_MEMORY) {
+
+            debugf("Token is a memory");
+
+        } else if (type == TOK_COMMA) {
+
+            debugf("Token is a comma");
+
+        } else if (type == TOK_LABEL) {
+
+            debugf("Token is a label");
+
+        } else {
+            errorf("Error, Token type unknown. Exiting...");
+            exit(0);
+        }
+
+    }
 
     return 0;
 }

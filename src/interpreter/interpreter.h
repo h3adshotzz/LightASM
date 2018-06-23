@@ -19,6 +19,9 @@
 
 #include <stdio.h>
 
+#include "../token.h"
+#include "../node.h"
+
 #define REGISTER_COUNT  12  // Array shit
 #define REGISTER_DEFAULT_VAL    -1
 
