@@ -55,7 +55,7 @@ void console_run() {
             // We didn't ask to quit/
             printf("Input: %s\n", curline);
 
-            /*TokenStream* tok_stream = create_new_token_stream(curline);
+            TokenStream* tok_stream = create_new_token_stream(curline);
             TokenError *err = NULL;
             Token *tkn = NULL;
 
@@ -65,7 +65,7 @@ void console_run() {
 
             if (err != NULL) {
                 tkn_error_print(err);
-            }*/
+            }
 
         }
     }
