@@ -22,7 +22,7 @@
 /**
  * Start the console
  */
-void run() {
+void console_run() {
 
     debugf("Starting LightASM Console...");
     warningf("This is still experimental. Errors may occur");
@@ -35,7 +35,7 @@ void run() {
 
         // Get input
         printf("-> ");
-        scanf("%[^\n]%*c", curline);
+        scanf("%[^\n]%*s", curline);    // SEGFAULT EXEC_BAD_ACCESS
 
         // Check if the user asked to cancel.
         if (strcmp(curline, "Quit") == 0) {
@@ -47,7 +47,17 @@ void run() {
             // We didn't ask to quit/
             printf("Input: %s\n", curline);
 
-            TokenStream* tokStream = create_new_token_stream(curline);
+            /*TokenStream* tok_stream = create_new_token_stream(curline);
+            TokenError *err = NULL;
+            Token *tkn = NULL;
+
+            while ((tkn = next_token(tok_stream, &err))) {
+                token_dump(tkn);
+            }
+
+            if (err != NULL) {
+                tkn_error_print(err);
+            }*/
 
         }
     }

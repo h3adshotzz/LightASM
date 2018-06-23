@@ -30,8 +30,11 @@
 void testing() {
 
     warningf("This is experimental. Crashes are expected.");
+    warningf("Jumping to console_run()");
 
-    TokenStream *tknstr = create_new_token_stream("MOV R5, #22");
+    console_run();
+
+    /*TokenStream *tknstr = create_new_token_stream(test_data);
     TokenError *err = NULL;
     Token *tkn = NULL;
     
@@ -41,7 +44,7 @@ void testing() {
 
     if (err != NULL) {
         tkn_error_print(err);
-    }
+    }*/
 }
 
 void version() {
@@ -82,7 +85,7 @@ int main(int argc, const char **argv) {
 	    } else if (!strcmp(main_arg, "-v") || !strcmp(main_arg, "--version")) {
 		    version();  // This is called from menu_helper.c
 	    } else if (!strcmp(main_arg, "-a") || !strcmp(main_arg, "--console")) {
-            run();   // This is called from console.c
+            console_run();   // This is called from console.c
         } else if (!strcmp(main_arg, "--dev")) {
 	        testing();
 	    } else {

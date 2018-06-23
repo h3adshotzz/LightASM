@@ -8,7 +8,7 @@
             "name": "(lldb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/obj/test",
+            "program": "${workspaceFolder}/obj/lightasmcore_test",
             "args": ["--dev"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

@@ -25,7 +25,8 @@
 
 #include "consts.h"
 #include "token.h"
+#include "utils/log.h"
 
-void run();
+void console_run();
 
 #endif
