@@ -1,6 +1,6 @@
 /**
  * LightASM
- * Copyright (C) 2017, Is This On? 
+ * Copyright (C) 2018, Is This On? 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ void console_run() {
             // We didn't ask to quit/
             printf("Input: %s\n", curline);
 
-            TokenStream* tok_stream = create_new_token_stream(curline);
+            TokenStream* tok_stream = token_stream_new(curline);
             
             start_interpreter(tok_stream);
 

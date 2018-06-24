@@ -1,6 +1,6 @@
 /**
  * LightASM
- * Copyright (C) 2017, Is This On? 
+ * Copyright (C) 2018, Is This On? 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ void start_interpreter(TokenStream* tok_stream) {
     //node_type *n_type = NULL;
     //node_op_type *n_op_type = NULL;
 
-    while ((tkn = next_token(tok_stream, &err))) {
+    while ((tkn = token_stream_next(tok_stream, &err))) {
         token_dump(tkn);
 
         char type = tkn->type;

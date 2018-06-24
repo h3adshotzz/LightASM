@@ -1,6 +1,6 @@
 /**
  * LightASM
- * Copyright (C) 2017, Is This On? 
+ * Copyright (C) 2018, Is This On? 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ void testing() {
     TokenError *err = NULL;
     Token *tkn = NULL;
     
-    while ((tkn = next_token(tknstr, &err))) {
+    while ((tkn = token_stream_next(tknstr, &err))) {
         token_dump(tkn); 
     }
 

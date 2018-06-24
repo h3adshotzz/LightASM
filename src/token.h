@@ -1,6 +1,6 @@
 /**
  * LightASM
- * Copyright (C) 2017, Is This On? 
+ * Copyright (C) 2018, Is This On? 
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,9 +61,11 @@ typedef struct {
 //typedef bool (*Reader)(char);
 
 // Functions. They are commented in token.c
-Token* create_new_token(char* val, char type);
-TokenStream* create_new_token_stream(char* input);
-Token* next_token(TokenStream* tknstr, TokenError** err);
+
+Token* token_new(char* val, char type);
 void token_dump (Token* self);
+
+TokenStream* token_stream_new(char* input);
+Token* token_stream_next(TokenStream* tknstr, TokenError** err);
 
 #endif
