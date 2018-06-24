@@ -10,9 +10,11 @@ LIB_SOURCES =							\
 	string.c 							\
 	console.c							\
 	array_contains.c 					\
+	nodearray.c 						\
 	utils/log.c							\
 	utils/error.c						\
-	interpreter/interpreter.c
+	interpreter/interpreter.c			\
+	interpreter/parse.c
 
 TEST_SOURCES = 							\
 	main.c									

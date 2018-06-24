@@ -21,6 +21,7 @@
 #define NODE_H
 
 #include "utils/log.h"
+#include "token.h"
 
 
 typedef struct ast {
@@ -47,6 +48,7 @@ typedef enum {
 typedef struct node {
     node_type type;
     void* value;
+    char* test_id;      // This is just for testing and will be removed soon.
 } node;
 
 typedef enum {

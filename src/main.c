@@ -29,19 +29,31 @@ void testing() {
 
     warningf("This is experimental. Crashes are expected.");
     
+    /**
+     * 
+     * This is just testing whether nodearray_push works.
+     * 
+     */
+
     node* tst1 = malloc(sizeof(node));
-    tst1->type = NTYPE_LDR;
+    tst1->test_id = "tst1";
 
     node* tst2 = malloc(sizeof(node));
-    tst2->type = NTYPE_ADD;
+    tst2->test_id = "tst2";
     
     node* tst3 = malloc(sizeof(node));
-    tst3->type = NTYPE_CMP;
+    tst3->test_id = "tst3";
     
     nodearray* test_arr = nodearray_new();
     nodearray_push(test_arr, tst1);
     nodearray_push(test_arr, tst2);
     nodearray_push(test_arr, tst3);
+
+    debugf("Size of array: %d", test_arr->elements);
+
+    for (int i = 0; i < test_arr->elements; i++) {
+        debugf("Item [%d]: %s", i, test_arr->value[i]->test_id);
+    }
 
 }
 
