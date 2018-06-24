@@ -23,24 +23,26 @@
 #include "console.h"
 #include "string.h"
 
+#include "node.h"
+
 void testing() {
 
     warningf("This is experimental. Crashes are expected.");
-    warningf("Jumping to console_run()");
-
-    console_run();
-
-    /*TokenStream *tknstr = create_new_token_stream(test_data);
-    TokenError *err = NULL;
-    Token *tkn = NULL;
     
-    while ((tkn = token_stream_next(tknstr, &err))) {
-        token_dump(tkn); 
-    }
+    node* tst1 = malloc(sizeof(node));
+    tst1->type = NTYPE_LDR;
 
-    if (err != NULL) {
-        tkn_error_print(err);
-    }*/
+    node* tst2 = malloc(sizeof(node));
+    tst2->type = NTYPE_ADD;
+    
+    node* tst3 = malloc(sizeof(node));
+    tst3->type = NTYPE_CMP;
+    
+    nodearray* test_arr = nodearray_new();
+    nodearray_push(test_arr, tst1);
+    nodearray_push(test_arr, tst2);
+    nodearray_push(test_arr, tst3);
+
 }
 
 void version() {

@@ -62,6 +62,17 @@ TokenStream* token_stream_new(char* input) {
 }
 
 
+int token_stream_eof(TokenStream* tok) {
+    if (tok->cache) {
+        return 0;   // FALSE
+    }
+    tok->cache = token_stream_next(tok);
+    if (!tok->cache) {
+        return 1;   // TRUE
+    }
+    return 0l       // FALSE
+}
+
 /**
  *  Some complaints about this in token.h...
  */

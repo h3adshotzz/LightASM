@@ -20,6 +20,13 @@
 #ifndef NODE_H
 #define NODE_H
 
+#include "utils/log.h"
+
+
+typedef struct ast {
+    TokenStream* toks;
+} ast;
+
 typedef enum {
     NTYPE_LDR,
 	NTYPE_STR,
@@ -78,5 +85,10 @@ typedef struct nodearray {
     int elements;
     int allocated;
 } nodearray;
+
+
+// nodearray.c functions
+nodearray* nodearray_new();
+int nodearray_push(nodearray* array, node* item);
 
 #endif
