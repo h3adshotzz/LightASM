@@ -55,7 +55,7 @@ void console_run() {
             // We didn't ask to quit/
             printf("Input: %s\n", curline);
 
-            TokenStream* tok_stream = create_new_token_stream(curline);
+            TokenStream* tok_stream = token_stream_new(curline);
             
             start_interpreter(tok_stream);
 

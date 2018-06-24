@@ -34,7 +34,7 @@ void testing() {
     TokenError *err = NULL;
     Token *tkn = NULL;
     
-    while ((tkn = next_token(tknstr, &err))) {
+    while ((tkn = token_stream_next(tknstr, &err))) {
         token_dump(tkn); 
     }
 

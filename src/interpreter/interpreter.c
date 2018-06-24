@@ -55,7 +55,7 @@ void start_interpreter(TokenStream* tok_stream) {
     //node_type *n_type = NULL;
     //node_op_type *n_op_type = NULL;
 
-    while ((tkn = next_token(tok_stream, &err))) {
+    while ((tkn = token_stream_next(tok_stream, &err))) {
         token_dump(tkn);
 
         char type = tkn->type;
