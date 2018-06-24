@@ -66,11 +66,12 @@ int token_stream_eof(TokenStream* tok) {
     if (tok->cache) {
         return 0;   // FALSE
     }
-    tok->cache = token_stream_next(tok);
+    TokenError *err = NULL;
+    tok->cache = token_stream_next(tok, &err);
     if (!tok->cache) {
         return 1;   // TRUE
     }
-    return 0l       // FALSE
+    return 0;       // FALSE
 }
 
 /**
