@@ -22,7 +22,7 @@
 int array_contains(char* val, char** arr) {
     int i = 0;
     while (arr[i]) {
-        if (strcmp(arr[i], val) == 0) {
+        if (strcmp(arr[i], val) == 0) {     // We get a BAD ACCESS if you type something that isn't a command
             return 1;
         }
         i++;

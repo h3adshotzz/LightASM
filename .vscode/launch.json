@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/obj/lightasmcore_test",
-            "args": ["--dev"],
+            "args": ["--console"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
