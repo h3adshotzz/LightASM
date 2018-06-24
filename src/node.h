@@ -56,11 +56,6 @@ typedef struct {
     int mem;
 } node_mem;
 
-typedef struct {
-    int reg_from;
-    int reg_to;
-} node_reg;
-
 typedef enum {
     NOP_REGISTER,
     NOP_LITERAL
