@@ -70,10 +70,10 @@ nodearray* parse(TokenStream* token_stream) {
             char* cmd = tkn->val;
             node* node = malloc(sizeof(node));
 
-            if (!strcmp(cmd, g_keywords[MOV_KW_POS])) {
+            if (!strcmp(cmd, "MOV")) {
                 node->type = NTYPE_MOV;
                 debugf("Command type MOV");
-            } else if (!strcmp(cmd, g_keywords[SUB_KW_POS])) {
+            } else if (!strcmp(cmd, "SUB")) {
                 node->type = NTYPE_SUB;
                 debugf("Command type SUB");
             }

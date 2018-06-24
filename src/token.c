@@ -23,7 +23,7 @@
 /**
  * LightASM Keywords
  */
-char* g_keywords[KW_SIZE] = {"MOV", "SUB", "ADD", "STR", "LDR", "CMP", "B", "AND", "ORR", "EOR", "MVN", "LSL", "LSR", "HALT"};
+static char* g_keywords[14] = {"MOV", "SUB", "ADD", "STR", "LDR", "CMP", "B", "AND", "ORR", "EOR", "MVN", "LSL", "LSR", "HALT"};
 
 
 

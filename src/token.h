@@ -56,30 +56,6 @@ typedef struct {
     Token* cache;       // Token cache
 } TokenStream;
 
-
-// Where each cmd is in the g_keywords array.
-#define MOV_KW_POS      0
-#define SUB_KW_POS      1
-#define ADD_KW_POS      2
-#define STR_KW_POS      3
-#define LDR_KW_POS      4
-#define CMP_KW_POS      5
-#define B_KW_POS        6
-#define AND_KW_POS      7
-#define ORR_KW_POS      8
-#define EOR_KW_POS      9
-#define MVN_KW_POS      10
-#define LSL_KW_POS      11
-#define LSR_KW_POS      12
-#define HALT_KW_POS     13
-
-#define KW_SIZE         14
-
-/**
- * LightASM Keywords
- */
-extern char* g_keywords[KW_SIZE];
-
 // @zistooshort tried to explain this to me but me no get it :(
 // Apparently it defines a type (Reader) which is a pointer to a function which takes char and returns bool.
 //typedef bool (*Reader)(char);
