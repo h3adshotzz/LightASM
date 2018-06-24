@@ -25,6 +25,8 @@
 #include "../token.h"
 #include "../node.h"
 
+#include "parse.h"
+
 #define REGISTER_COUNT  12  // Array shit
 #define REGISTER_DEFAULT_VAL    -1
 

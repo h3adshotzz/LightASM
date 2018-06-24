@@ -23,5 +23,8 @@
 #include "../node.h"
 #include "../token.h"
 
+#include "../array_contains.h"
+
+nodearray* parse(TokenStream* token_stream);
 
 #endif

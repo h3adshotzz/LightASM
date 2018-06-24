@@ -19,6 +19,14 @@
 
 #include "node.h"
 
+node* node_new(Token* tkn) {
+    node* rt = malloc(sizeof(node));
+
+    // TBC
+
+    return NULL;
+}
+
 nodearray* nodearray_new() {
     nodearray* array = malloc(sizeof(nodearray));
     array->value = NULL;
