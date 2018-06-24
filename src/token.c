@@ -65,7 +65,7 @@ TokenStream* create_new_token_stream(char* input) {
 /**
  *  Some complaints about this in token.h...
  */
-char* read_token_string(TokenStream* stream, int (*reader)(char)) {
+char* read_token_string(TokenStream* stream, int (*reader)(int)) {
 
     // Result string and counter
     char* str = "";
@@ -134,7 +134,7 @@ Token* next_token(TokenStream* tknstr, TokenError** err) {
     } else if (next_char == '#') {      // A number is next
 
         tknstr->position++;
-        char* str = read_token_string(tknstr, &isnumber);
+        char* str = read_token_string(tknstr, &isdigit);
         return create_new_token(str, TOK_NUMBER);
 
     } else if (next_char == ',') {  // if next char is a comma
@@ -144,7 +144,7 @@ Token* next_token(TokenStream* tknstr, TokenError** err) {
 
     } else if (isdigit(next_char)) {
 
-        char* str = read_token_string(tknstr, &isnumber);
+        char* str = read_token_string(tknstr, &isdigit);
         return create_new_token(str, TOK_MEMORY);
 
     } else {
