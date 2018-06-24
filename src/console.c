@@ -56,16 +56,8 @@ void console_run() {
             printf("Input: %s\n", curline);
 
             TokenStream* tok_stream = create_new_token_stream(curline);
-            TokenError *err = NULL;
-            Token *tkn = NULL;
-
-            while ((tkn = next_token(tok_stream, &err))) {
-                token_dump(tkn);
-            }
-
-            if (err != NULL) {
-                tkn_error_print(err);
-            }
+            
+            start_interpreter(tok_stream);
 
         }
     }

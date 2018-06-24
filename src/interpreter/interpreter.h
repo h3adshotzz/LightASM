@@ -17,6 +17,9 @@
  * 
 */
 
+#ifndef INTERPRETER_H
+#define INTERPRETER_H
+
 #include <stdio.h>
 
 #include "../token.h"
@@ -40,4 +43,6 @@ typedef enum {
     REGISTER_R11 = 11
 } reg_t;
 
-int register_state[REGISTER_COUNT] = {0,1,2,3,4,5,6,7,8,9,10,11};
+void start_interpreter(TokenStream* tok_stream);
+
+#endif

@@ -19,6 +19,8 @@
 
 #include "interpreter.h"
 
+static int register_state[REGISTER_COUNT] = {0,1,2,3,4,5,6,7,8,9,10,11};
+
 int get_reg_state(reg_t reg) {
     if (reg >= 0 && reg <= 11) {
         return register_state[reg];
@@ -45,9 +47,8 @@ void display_regs() {
 
 }
 
-int main(int argc, char* argv[]) {
+void start_interpreter(TokenStream* tok_stream) {
     
-    TokenStream* tok_stream = create_new_token_stream("MOV R2, #22");
     TokenError* err = NULL;
     Token* tkn = NULL;
 
@@ -93,5 +94,4 @@ int main(int argc, char* argv[]) {
 
     }
 
-    return 0;
 }

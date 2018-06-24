@@ -23,6 +23,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "interpreter/interpreter.h"
+
 #include "consts.h"
 #include "token.h"
 #include "utils/log.h"

@@ -114,7 +114,7 @@ Token* next_token(TokenStream* tknstr, TokenError** err) {
 
     if (!next_char) {
         return NULL; 
-    } else if (next_char == 'R' || next_char == 'r') {
+    } else if (next_char == 'R') {
         
         tknstr->position++;
         char* str = read_token_string(tknstr, &isdigit);

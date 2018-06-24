@@ -18,14 +18,10 @@
 */
 
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
 #include "consts.h"
 #include "console.h"
-#include "token.h"
 #include "string.h"
-#include "utils/log.h"
 
 void testing() {
 
