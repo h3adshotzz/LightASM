@@ -79,4 +79,4 @@ typedef struct nodearray {
     int allocated;
 } nodearray;
 
-#endif NODE_H
+#endif

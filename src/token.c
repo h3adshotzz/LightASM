@@ -65,7 +65,7 @@ TokenStream* create_new_token_stream(char* input) {
 /**
  *  Some complaints about this in token.h...
  */
-char* read_token_string(TokenStream* stream, int (*reader)(char)) {
+char* read_token_string(TokenStream* stream, int (*reader)(int)) {
 
     // Result string and counter
     char* str = "";

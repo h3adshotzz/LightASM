@@ -15,10 +15,7 @@ LIB_SOURCES =							\
 	interpreter/interpreter.c
 
 TEST_SOURCES = 							\
-	main.c								
-
-INTERPRETER_SOURCES =					\
-	interpreter/interpreter.c			
+	main.c									
 
 LIB_OBJECTS=$(LIB_SOURCES:%.c=$(OBJDIR)/%.o)
 TEST_OBJECTS=$(TEST_SOURCES:%.c=$(OBJDIR)/%.o)
