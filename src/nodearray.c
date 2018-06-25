@@ -29,27 +29,27 @@ void node_dump(node* node) {
     // Check the type
     switch(node->type) {
         case NTYPE_MOV:                     
-            printlnf("Node Type:                        NTYPE_MOV");
+            printlnf("Node Type:                                NTYPE_MOV");
         
             node_op *node_op_value = (node_op *) node->value;
 
             if (node_op_value->type == NOP_REGISTER) {
-                printlnf("Operation Destination:            R%d", node_op_value->dest);
-                printlnf("Operation Value:                  R%d", node_op_value->value);
+                printlnf("Operation Destination:                    R%d", node_op_value->dest);
+                printlnf("Operation Value:                          R%d", node_op_value->value);
             } else {
-                printlnf("Operation Destination:            R%d", node_op_value->dest);
-                printlnf("Operation Value:                  #%d", node_op_value->value);
+                printlnf("Operation Destination:                    R%d", node_op_value->dest);
+                printlnf("Operation Value:                          #%d", node_op_value->value);
             }
 
             break;
         
         case NTYPE_LDR:
-            printlnf("Node Type:                        NTYPE_LDR");
+            printlnf("Node Type:                                NTYPE_LDR");
 
             node_mem *node_mem_value = (node_mem *)node->value;
 
-            printlnf("Operation Register:                     R%d", node_mem_value->reg);
-            printlnf("Operation Memref:                       %d", node_mem_value->mem);
+            printlnf("Operation Register:                       R%d", node_mem_value->reg);
+            printlnf("Operation Memref:                         %d", node_mem_value->mem);
 
             break;
 
@@ -83,8 +83,8 @@ void nodearray_dump(nodearray* array) {
 nodearray* nodearray_new() {
     nodearray* array = malloc(sizeof(nodearray));
     array->value = NULL;
-    array->elements = NULL;
-    array->allocated = NULL;
+    array->elements = 0;
+    array->allocated = 0;
 
     return array;
 }
