@@ -11,6 +11,12 @@
         "ratio": "c",
         "tuple": "c",
         "type_traits": "c",
-        "utility": "c"
+        "utility": "c",
+        "__bit_reference": "c",
+        "atomic": "c",
+        "bitset": "c",
+        "iterator": "c",
+        "locale": "c",
+        "system_error": "c"
     }
 }

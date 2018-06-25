@@ -61,7 +61,7 @@ nodearray* parse(TokenStream* token_stream) {
                 // Set the first register as the dest, because we are moving something into it
                 Token* tmp = token_stream_next(token_stream, &err);         // This token_stream should be the first operator
                 op->dest = atoi(tmp->val);    // char* to int issue here
-                
+
 
                 // Make sure that the next token is a comma
                 if (token_stream_next(token_stream, &err)->type == TOK_COMMA) {
@@ -72,13 +72,13 @@ nodearray* parse(TokenStream* token_stream) {
 
                         // Set type and value accordingly
                         op->type = NOP_REGISTER;
-                        op->value = tmp->val;
+                        op->value = atoi(tmp->val);
 
                     } else if (tmp->type == TOK_NUMBER) {
 
                         // Set type and value accordingly
                         op->type = NOP_LITERAL;
-                        op->value = tmp->val;
+                        op->value = atoi(tmp->val);
 
                     } else {
 
@@ -95,6 +95,8 @@ nodearray* parse(TokenStream* token_stream) {
                     exit(0);
                 }
 
+                node->value = op;
+
                 // Add to the array
                 nodearray_push(rt, node);
                 
@@ -107,6 +109,8 @@ nodearray* parse(TokenStream* token_stream) {
         }
 
     }
+
+    nodearray_dump(rt);
 
     return rt;
 

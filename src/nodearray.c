@@ -19,13 +19,54 @@
 
 #include "node.h"
 
-node* node_new(Token* tkn) {
-    node* rt = malloc(sizeof(node));
+void node_dump(node* node) {
 
-    // TBC
+    if (!node) {
+        warningf("Node is nil");
+        exit(0);
+    }
 
-    return NULL;
+    // Check the type
+    switch(node->type) {
+        case NTYPE_MOV:                     
+            printlnf("Node Type:            NTYPE_MOV");
+        
+            node_op *node_value = (node_op *) node->value;
+
+            if (node_value->type == NOP_REGISTER) {
+                printlnf("Operation Destination:            R%d", node_value->dest);
+                printlnf("Operation Value:                  R%d", node_value->value);
+            } else {
+                printlnf("Operation Destination:            R%d", node_value->dest);
+                printlnf("Operation Value:                  #%d", node_value->value);
+            }
+        
+        default:
+            debugf("lol");
+    }
+
 }
+
+void nodearray_dump(nodearray* array) {
+
+    debugf("Dumping nodearray...");
+
+    // Print array information
+    printlnf("=== NODEARRAY DUMP ===");
+    
+    printlnf("Elements:             %d", array->elements);
+    printlnf("Allocated:            %d", array->allocated);
+    printlnf("");
+
+    for (int i = 0; i < array->elements; i++) {
+        
+        
+
+        printlnf("== Node %d ==", i);
+        node_dump(array->value[i]);
+    }
+}
+
 
 nodearray* nodearray_new() {
     nodearray* array = malloc(sizeof(nodearray));
@@ -43,7 +84,7 @@ int nodearray_push(nodearray* array, node* item) {
 
         // If there are no elements, start with 2
         if (array->allocated == 0) {
-            array->allocated = 2;
+            array->allocated = 10;
         } else {
             // Add another two
             array->allocated += 2;
