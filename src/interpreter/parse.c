@@ -20,6 +20,44 @@
 #include "parse.h"
 
 
+node* parse_ldr(TokenStream* token_stream, Token* tmp) {
+    
+    // Create this for when things go wrong.   
+    TokenError* err;
+
+    // Create a new node
+    node *node = malloc(sizeof(node));
+
+    debugf("Command type LDR");
+
+    // Set the node type and create a node_mem
+    node->type = NTYPE_LDR;
+    node_mem* ndemem = malloc(sizeof(node_mem));
+
+    // Set the register.
+    tmp = token_stream_next(token_stream, &err);
+    ndemem->reg = atoi(tmp->val);
+
+    // Make sure the next token is a comma
+    if (token_stream_next(token_stream, &err)->type == TOK_COMMA) {
+        
+        // Set the memory reference
+        tmp = token_stream_next(token_stream, &err);
+        ndemem->mem = atoi(tmp->val);
+    } else {
+        // The token after the first operator wasn't a comma, so there was
+        // an error. Again these will be handled better in the future.
+        errorf("Unrecognised Token. Aborting...");
+        exit(0);
+    }
+
+    // Set the node value
+    node->value = ndemem;
+
+    return node;
+}
+
+
 node* parse_mov(TokenStream* token_stream, Token* tmp) {
     
     // Create this for when things go wrong
@@ -78,6 +116,8 @@ node* parse_mov(TokenStream* token_stream, Token* tmp) {
 
     return node;
 }
+
+
 /**
  * 
  *  The purpose of this is to take a token stream, convert
@@ -109,9 +149,11 @@ nodearray* parse(TokenStream* token_stream) {
                 // Parse MOV and push onto to rt.
                 nodearray_push(rt, parse_mov(token_stream, tmp));
                 
-            } else if (!strcmp(cmd, "SUB")) {
-                
-                debugf("Command type SUB");
+            } else if (!strcmp(cmd, "LDR")) {
+
+                // Prase LDR and push onto rt
+                nodearray_push(rt, parse_ldr(token_stream, tmp));
+
             }
 
 
