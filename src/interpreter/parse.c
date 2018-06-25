@@ -20,6 +20,9 @@
 #include "parse.h"
 
 
+node* parse_mov() {
+    return NULL;
+}
 /**
  * 
  *  The purpose of this is to take a token stream, convert
@@ -32,16 +35,16 @@ nodearray* parse(TokenStream* token_stream) {
     nodearray* rt = nodearray_new();
 
     // These will be needed later.
-    Token* tkn = NULL;
+    Token* tmp = NULL;
     TokenError* err = NULL;
 
-    while ((tkn = token_stream_next(token_stream, &err))) {     // This token_stream dump should be the command
+    while ((tmp = token_stream_next(token_stream, &err))) {     // This token_stream dump should be the command
         
         // Check if the token is of the type TOK_COMMAND
-        if (tkn->type == TOK_COMMAND){
+        if (tmp->type == TOK_COMMAND){
 
             // Set the tkn value to a char* for ease, also create a node.
-            char* cmd = tkn->val;
+            char* cmd = tmp->val;
             node* node = malloc(sizeof(node));
 
             /**
@@ -59,7 +62,7 @@ nodearray* parse(TokenStream* token_stream) {
 
 
                 // Set the first register as the dest, because we are moving something into it
-                Token* tmp = token_stream_next(token_stream, &err);         // This token_stream should be the first operator
+                tmp = token_stream_next(token_stream, &err);         // This token_stream should be the first operator
                 op->dest = atoi(tmp->val);    // char* to int issue here
 
 
