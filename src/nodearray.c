@@ -29,7 +29,7 @@ void node_dump(node* node) {
     // Check the type
     switch(node->type) {
         case NTYPE_MOV:                     
-            printlnf("Node Type:            NTYPE_MOV");
+            printlnf("Node Type:                        NTYPE_MOV");
         
             node_op *node_value = (node_op *) node->value;
 
