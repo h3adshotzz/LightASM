@@ -66,6 +66,16 @@ void node_dump(node* node) {
 
             break;
 
+        case NTYPE_STR:
+            printlnf("Node Type:                                NTYPE_STR");
+
+            node_mem_value = (node_mem *)node->value;
+
+            printlnf("Operation Register:                       R%d", node_mem_value->reg);
+            printlnf("Operation Memref:                         %d", node_mem_value->mem);
+
+            break;
+
         case NTYPE_ADD:
             printlnf("Node Type:                                NTYPE_ADD");
 

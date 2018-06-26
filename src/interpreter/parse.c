@@ -130,6 +130,47 @@ node* parse_ldr(TokenStream* token_stream, Token* tmp, TokenError** err) {
 
 
 /**
+ *  The logic to parse the STR command from a Token Stream
+ *  to a single node. NULL can be returned if the token
+ *  isn't of the correct type, which can then be handled else-
+ *  where. 
+ * 
+ *  Returns:
+ *      node                                -   The node built from the Token Stream
+ * 
+ *  Params:
+ *      TokenStream - token_stream          -   The Token Stream currently being used
+ *      Token - tmp                         -   A temp Token to store the current TokenStream.
+ *      TokenError - err                    -   The Token Error currently in use.
+ * 
+ */
+node* parse_str(TokenStream* token_stream, Token* tmp, TokenError** err) {
+
+    // Create a new node, set the type and then createa a node_mem
+    node* node = malloc(sizeof(node));
+    node->type = NTYPE_STR;
+    node_mem* ndemem = malloc(sizeof(ndemem));
+
+    // Set the first register
+    ndemem->reg = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the first comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Set the memory reference
+    ndemem->mem = get_memref(token_stream, err);
+
+    // Set the node value
+    node->value = ndemem;
+
+    // Return the node
+    return node;
+
+}
+
+
+/**
  *  The logic to parse the MOV command from a Token Stream
  *  to a single node. NULL can be returned if the token
  *  isn't of the correct type, which can then be handled else-
@@ -293,6 +334,9 @@ nodearray* parse(TokenStream* token_stream) {
             } else if (!strcmp(cmd, "LDR")) {
                 // Prase LDR and push onto rt
                 nodearray_push(rt, parse_ldr(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "STR")) {
+                // Parse STR and push onto rt
+                nodearray_push(rt, parse_str(token_stream, tmp, &err));
             }
         }
 
