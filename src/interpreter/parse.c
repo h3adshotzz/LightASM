@@ -227,6 +227,49 @@ node* parse_mov(TokenStream* token_stream, Token* tmp, TokenError** err) {
 }
 
 
+node* parse_cmp(TokenStream* token_stream, Token* tmp, TokenError** err) {
+
+    // Create a new node, set the type and then create a node_op
+    node *node = malloc(sizeof(node));
+    node->type = NTYPE_CMP;
+    node_op *op = malloc(sizeof(node_op));
+
+    // Set the first register
+    op->dest = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the first comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Check whether we are using a register or a number
+    tmp = token_stream_next(token_stream, err);
+    if (!tmp) return NULL;
+    if (tmp->type == TOK_REGISTER) {
+
+        // Set the type and value of op
+        op->type = NOP_REGISTER;
+        op->value = atoi(tmp->val);
+    } else if (tmp->type == TOK_NUMBER) {
+
+        // Set the type and value op
+        op->type = NOP_LITERAL;
+        op->value = atoi(tmp->val);
+    } else {
+
+        // There was an issue, throw a token error with a message.
+        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        return NULL;
+    }
+
+    // Set the nodes value 
+    node->value = op;
+
+    // Return the node
+    return node;
+
+}
+
+
 /**
  *  The logic to parse the ADD command from a Token Stream
  *  to a single node. NULL can be returned if the token
@@ -337,6 +380,9 @@ nodearray* parse(TokenStream* token_stream) {
             } else if (!strcmp(cmd, "STR")) {
                 // Parse STR and push onto rt
                 nodearray_push(rt, parse_str(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "CMP")) {
+                // Parse STR and push onto rt
+                nodearray_push(rt, parse_cmp(token_stream, tmp, &err));
             }
         }
 

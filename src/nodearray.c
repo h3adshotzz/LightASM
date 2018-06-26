@@ -55,6 +55,21 @@ void node_dump(node* node) {
             }
 
             break;
+
+        case NTYPE_CMP:                     
+            printlnf("Node Type:                                NTYPE_CMP");
+        
+            node_op_value = (node_op *) node->value;
+
+            if (node_op_value->type == NOP_REGISTER) {
+                printlnf("Operation Destination:                    R%d", node_op_value->dest);
+                printlnf("Operation Value:                          R%d", node_op_value->value);
+            } else {
+                printlnf("Operation Destination:                    R%d", node_op_value->dest);
+                printlnf("Operation Value:                          #%d", node_op_value->value);
+            }
+
+            break;
         
         case NTYPE_LDR:
             printlnf("Node Type:                                NTYPE_LDR");
