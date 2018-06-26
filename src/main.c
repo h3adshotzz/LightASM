@@ -57,12 +57,24 @@ void testing() {
 
 }
 
+
+/**
+ *  Just some version information
+ * 
+ */
 void version() {
+    // Print the version information. Use the consts in consts.h
     printf("LightASM %d.%d [%d]\n\n", AQA_ASM_MAJOR_VERSION, AQA_ASM_MINOR_VERSION, AQA_ASM_BUILD);
 }
 
+
+/**
+ *  The help menu. 
+ * 
+ */
 void help_menu() {
 	
+    // Print usage information.
 	printf("Usage:	LightASM [OPTIONS] [FILE]...\n\n");
 	printf("Option			GNU Long Option			Meaning\n");
 	printf("-h, -?			--help				Show this message\n");
@@ -71,9 +83,24 @@ void help_menu() {
 	
 }
 
+
+/**
+ *  The main function of all this gloriousness... maybe that's spelt right idk.
+ * 
+ *  Return:
+ *      int             -   idek
+ * 
+ *  Param:
+ *      int - argc      -   The amount of args given
+ *      char - argv     -   The args given.
+ * 
+ */
 int main(int argc, const char **argv) {	
 
+
 #if DEBUG_MODE
+
+    // If debug mode is active we print argc and argv
     printf("argc: %d\n", argc);
 
     if (DEBUG_MODE) {
@@ -83,12 +110,17 @@ int main(int argc, const char **argv) {
 #endif
 
 	// See what we are dealing with
+    // This will be replaced soon.
     const char* main_arg = argv[1];
 
 #if DEBUG_MODE
+    // Again, if debug mode is active, print the main arg. 
     printf("main arg: %s\n", main_arg);
 #endif
 
+    /**
+     *  The joy that is determaining what the user entered.
+     */
     if (main_arg != NULL) {
         if (!strcmp(main_arg, "-h") || !strcmp(main_arg, "--help")) {
 		    help_menu();    // This is called from menu_helper.c
@@ -99,13 +131,16 @@ int main(int argc, const char **argv) {
         } else if (!strcmp(main_arg, "--dev")) {
 	        testing();
 	    } else {
+            // Oh dear.
             errorf("Unrecognised arg[s]. Please run with -h or --help for options.\n");
-            //printf("Unrecognised arg[s]. Please run with -h or --help for options.\n");
+            exit(1);
         }
     } else {
+        // Oh dear again.
         printf("No options given. Please run with -h or --help for options.\n");
-        exit(0);
+        exit(1);
     }
     
+    // Return 0
     return 0;
 }

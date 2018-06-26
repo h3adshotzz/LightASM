@@ -29,6 +29,8 @@
 #include "token.h"
 #include "utils/log.h"
 
+
+// Console functions
 void console_run();
 
 #endif

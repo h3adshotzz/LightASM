@@ -45,26 +45,44 @@
 #define TOK_LABEL       '4'
 #define TOK_COMMA       '5'
 
+
+/**
+ *  The token struct. All parts of an input are
+ *  divided up into Tokens, which are then parsed
+ *  and interpreted.
+ * 
+ *  char* val       -   The value of the Token, for example "MOV"
+ *  char type       -   The type of the Token, to use the above example, TOK_COMMAND
+ * 
+ */
 typedef struct {
     char* val;      // String contents of token
     char type;      // Token type
 } Token;
 
+
+/**
+ *  The TokenStream struct. All Tokens are then
+ *  stored in a TokenStream. A TokenStream is 
+ *  basically a tokenized version of the input.
+ *  
+ *  size_t position     -   The current token in the stream being parsed.
+ *  char* source        -   The source, basiccally the users input
+ *  Token* cache        -   The array of the Tokens.
+ * 
+ */
 typedef struct { 
     size_t position;    // To determain where in the string (source) we are
     char* source;       // The users input, what we are token...ing
     Token* cache;       // Token cache
 } TokenStream;
 
-// @zistooshort tried to explain this to me but me no get it :(
-// Apparently it defines a type (Reader) which is a pointer to a function which takes char and returns bool.
-//typedef bool (*Reader)(char);
 
-// Functions. They are commented in token.c
-
+// Token functions.
 Token* token_new(char* val, char type);
 void token_dump (Token* self);
 
+// TokenStream functions.
 TokenStream* token_stream_new(char* input);
 Token* token_stream_next(TokenStream* tknstr, TokenError** err);
 int token_stream_eof(TokenStream* tok);

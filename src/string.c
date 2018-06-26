@@ -20,12 +20,15 @@
 #include "string.h"
 
 /**
- * Append the string b to a
- *
- * a - base string
- * b - string to be appended
- *
- * Returns the new string
+ *  Append the "string" b to a
+ * 
+ *  Returns:
+ *      char*       -   The appended "string"
+ * 
+ *  Params:
+ *      char* a     -   The char which we are appending to
+ *      char* b     -   The char being appended.
+ * 
  */
 char *strappend(char *a, char *b) {
     // Get the length of a & b
@@ -48,6 +51,18 @@ char *strappend(char *a, char *b) {
     return result;
 }
 
+
+/**
+ *  Append a char to a string
+ * 
+ *  Returns:
+ *      char*       -   The appended "string"
+ * 
+ *  Params:
+ *      char* a     -   The string we are appending to
+ *      char b      -   The char being appended to a
+ *  
+ */
 char *chrappend(char *a, char b) {
     // The result will be long (ch + NULL)
     char *result = malloc(2);
@@ -63,11 +78,12 @@ char *chrappend(char *a, char b) {
 /**
  * Append multiple strings together
  * 
- * toap - strings to append together
+ * Returns:
+ *      char        -   The appended "String"[s]
  * 
- * Usage: mstrappend("%s%s%s", str1, str2, "str3");
- * 
- * Returns a new string
+ * Params:
+ *      size_t count    -   The amount of string we are appending
+ *      ...             -   The va_list of string to append to eachother.
  */
 char *mstrappend(size_t count, ...) {
     

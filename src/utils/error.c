@@ -19,15 +19,38 @@
 
 #include "error.h"
 
+
+/**
+ *  Throw the TokenError
+ * 
+ *  Returns:
+ *      TokenError      -   The TokenError thrown
+ * 
+ *  Params:
+ *      char* msg       -   The message to throw with the error
+ */
 TokenError* throw_token_error(char* msg) {
 
+    // Create the TokenError and allocate memory, set the message
     TokenError* tknerr = malloc(sizeof(TokenError));
     tknerr->msg = msg;
 
+    // Return the TokenError.
     return tknerr;
 
 } 
 
+
+/** 
+ *  Print the TokenError
+ * 
+ *  Returns:
+ *      void
+ * 
+ *  Params:
+ *      TokenError* e       -   The TokenError to the print.
+ */
 void tkn_error_print(TokenError* e) {
+    // Print an error with the msg.
     errorf("Thrown: %s", e->msg);
 }

@@ -22,10 +22,17 @@
 
 #include "log.h"
 
+/**
+ *  The TokenError struct
+ * 
+ *  char* msg   -   The message to throw
+ */
 typedef struct {
     char* msg;
 } TokenError;
 
+
+// Error Functions
 void tkn_error_print(TokenError* e);
 TokenError* throw_token_error(char* msg);
 

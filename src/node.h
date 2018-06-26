@@ -24,10 +24,11 @@
 #include "token.h"
 
 
-typedef struct ast {
-    TokenStream* toks;
-} ast;
-
+/**
+ *  The differnet types a node can be,
+ *  The differnet types of operation,
+ *  and the different type of command
+ */
 typedef enum {
     NTYPE_LDR,
 	NTYPE_STR,
@@ -45,21 +46,38 @@ typedef enum {
 	NTYPE_HALT
 } node_type;
 
-typedef struct node {
-    node_type type;
-    void* value;
-    char* test_id;      // This is just for testing and will be removed soon.
-} node;
+typedef enum {
+    NOP_REGISTER,
+    NOP_LITERAL
+} node_op_type;
 
+typedef enum {
+    NCMP_NONE,
+    NCMP_EQUAL,
+    NCMP_NEQUAL,
+    NCMP_GREATER,
+    NCMP_LESS
+} node_cmp_type;
+
+
+/**
+ *  Node values.
+ * 
+ *  node_mem    -   Used for commands like LDR where memory is moved to registers
+ *  node_op     -   Used for commands like MOV where either register or numbers are moved to a register
+ *  node_on_on  -   Used for commands like ADD where a register and (number or register) is added and stored to a register.
+ *  node_b      -   Used for commands like B where we are branching to a different place
+ */
 typedef struct {
     int reg;
     int mem;
 } node_mem;
 
-typedef enum {
-    NOP_REGISTER,
-    NOP_LITERAL
-} node_op_type;
+typedef struct {
+    int dest;
+    node_op_type type;
+    int value;
+} node_op;
 
 typedef struct {
     int dest;               // First reg
@@ -70,24 +88,33 @@ typedef struct {
 } node_op_on;
 
 typedef struct {
-    int dest;
-    node_op_type type;
-    int value;
-} node_op;
-
-typedef enum {
-    NCMP_NONE,
-    NCMP_EQUAL,
-    NCMP_NEQUAL,
-    NCMP_GREATER,
-    NCMP_LESS
-} node_cmp_type;
-
-typedef struct {
     char* target;
     node_cmp_type cond;
 } node_b;
 
+
+/**
+ *  Structure of a node type
+ * 
+ *  node_type type      -   The type of node, for example NTYPE_LDR
+ *  void* value         -   The value of the ndoe, for example node_mem
+ *  char* test_id       -   Debugging which will be removed soon
+ */
+typedef struct node {
+    node_type type;
+    void* value;
+    char* test_id;      // This is just for testing and will be removed soon.
+} node;
+
+
+/**
+ *  Structure of a nodearray
+ * 
+ *  node **value        -   The array of nodes.
+ *  int elements        -   The amount of elements in the array
+ *  int allocated       -   The amount of memory we allocated.
+ * 
+ */
 typedef struct nodearray {
     node **value;
     int elements;
@@ -95,7 +122,7 @@ typedef struct nodearray {
 } nodearray;
 
 
-// nodearray.c functions
+// Nodearray functions
 nodearray* nodearray_new();
 int nodearray_push(nodearray* array, node* item);
 void nodearray_dump(nodearray* array);

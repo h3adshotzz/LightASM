@@ -19,11 +19,24 @@
 
 #include "node.h"
 
+
+/**
+ *  Prints out the contents of the node in a more friendly
+ *  format. 
+ * 
+ *  Returns:
+ *      void
+ * 
+ *  Params:
+ *      node - node         -   The node in which we want to dump
+ * 
+ */
 void node_dump(node* node) {
 
+    // If the node is nil, we can't continue.
     if (!node) {
         warningf("Node is nil");
-        exit(0);
+        return;
     }
 
     // Check the type
@@ -76,29 +89,51 @@ void node_dump(node* node) {
 
 }
 
+
+/**
+ *  Printing information about the nodearray and each
+ *  node in the array.
+ * 
+ *  Returns:
+ *      void
+ * 
+ *  Params:
+ *      nodearray - array           -   The nodearray to dump.
+ * 
+ */
 void nodearray_dump(nodearray* array) {
 
+    // Debugging message
     debugf("Dumping nodearray...");
 
     // Print array information
     printlnf("=== NODEARRAY DUMP ===");
-    
     printlnf("Elements:             %d", array->elements);
     printlnf("Allocated:            %d", array->allocated);
     printlnf("");
 
+    // Cycle through each element.
     for (int i = 0; i < array->elements; i++) {
-        
-        
-
+        // Print the node position, then dump the node.
         printlnf("== Node %d ==", i);
         node_dump(array->value[i]);
     }
 }
 
 
+/**
+ *  Create a new nodearray... that's about it.
+ * 
+ *  Return:
+ *      nodearray           -   The nodearray we just created.
+ * 
+ */
 nodearray* nodearray_new() {
+
+    // Create a new node array, allocated some memory.
     nodearray* array = malloc(sizeof(nodearray));
+
+    // Set initial values for value, elements and allocated. 
     array->value = NULL;
     array->elements = 0;
     array->allocated = 0;
@@ -106,6 +141,18 @@ nodearray* nodearray_new() {
     return array;
 }
 
+
+/**
+ *  Pushes a new node onto the node array given.
+ * 
+ *  Returns:
+ *      int     -   The amount of elements in the new nodearray
+ * 
+ *  Params:
+ *      nodearray - array       -   The array to add the new node onto
+ *      node - node             -   The node to add to the array.
+ * 
+ */
 int nodearray_push(nodearray* array, node* item) {
 
     // If the number allocated is equal to the size, we need more space

@@ -26,10 +26,7 @@
 
 #include "utils/log.h"
 
-/*typedef struct {
-    char* string;
-} String;*/
-
+// Char and String appending functions.
 char *strappend(char *a, char *b);
 char *chrappend(char *a, char b);
 char *mstrappend(size_t count, ...);

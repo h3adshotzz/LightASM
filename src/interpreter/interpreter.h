@@ -27,6 +27,8 @@
 
 #include "parse.h"
 
+// Register prototyping
+
 #define REGISTER_COUNT  12  // Array shit
 #define REGISTER_DEFAULT_VAL    -1
 
@@ -45,6 +47,9 @@ typedef enum {
     REGISTER_R11 = 11
 } reg_t;
 
+// end prototyping
+
+// Interpreter functions
 void start_interpreter(TokenStream* tok_stream);
 
 #endif

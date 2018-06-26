@@ -23,6 +23,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+// Array contains functions
 int array_contains(char* val, char** arr);
 
 #endif

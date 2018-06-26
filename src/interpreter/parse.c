@@ -70,11 +70,11 @@ int get_memref(TokenStream* tmp, TokenError** err) {
  *  TOK_REGISTER
  * 
  *  Returns:
- *      int             -   is the token a register?
+ *      int                     -   is the token a register?
  *  
  *  Params:
- *      TokenStream     -   The Token Stream to verify
- *      TokenError      -   The Token Error currently in use
+ *      TokenStream - tmp       -   The Token Stream to verify
+ *      TokenError - err        -   The Token Error currently in use
  * 
  */
 int get_register(TokenStream* tmp, TokenError** err) {
@@ -89,7 +89,18 @@ int get_register(TokenStream* tmp, TokenError** err) {
 
 
 /**
- *  The logic to parse the LDR command from a token 
+ *  The logic to parse the LDR command from a Token Stream
+ *  to a single node. NULL can be returned if the token
+ *  isn't of the correct type, which can then be handled else-
+ *  where. 
+ * 
+ *  Returns:
+ *      node                                -   The node built from the Token Stream
+ * 
+ *  Params:
+ *      TokenStream - token_stream          -   The Token Stream currently being used
+ *      Token - tmp                         -   A temp Token to store the current TokenStream.
+ *      TokenError - err                    -   The Token Error currently in use.
  * 
  */
 node* parse_ldr(TokenStream* token_stream, Token* tmp, TokenError** err) {
@@ -118,6 +129,21 @@ node* parse_ldr(TokenStream* token_stream, Token* tmp, TokenError** err) {
 }
 
 
+/**
+ *  The logic to parse the MOV command from a Token Stream
+ *  to a single node. NULL can be returned if the token
+ *  isn't of the correct type, which can then be handled else-
+ *  where. 
+ * 
+ *  Returns:
+ *      node                                -   The node built from the Token Stream
+ * 
+ *  Params:
+ *      TokenStream - token_stream          -   The Token Stream currently being used
+ *      Token - tmp                         -   A temp Token to store the current TokenStream.
+ *      TokenError - err                    -   The Token Error currently in use.
+ * 
+ */
 node* parse_mov(TokenStream* token_stream, Token* tmp, TokenError** err) {
     
     // Create a new node, set the type and then create a node_op
@@ -160,6 +186,21 @@ node* parse_mov(TokenStream* token_stream, Token* tmp, TokenError** err) {
 }
 
 
+/**
+ *  The logic to parse the ADD command from a Token Stream
+ *  to a single node. NULL can be returned if the token
+ *  isn't of the correct type, which can then be handled else-
+ *  where. 
+ * 
+ *  Returns:
+ *      node                                -   The node built from the Token Stream
+ * 
+ *  Params:
+ *      TokenStream - token_stream          -   The Token Stream currently being used
+ *      Token - tmp                         -   A temp Token to store the current TokenStream.
+ *      TokenError - err                    -   The Token Error currently in use.
+ * 
+ */
 node* parse_add(TokenStream* token_stream, Token* tmp, TokenError** err) {
 
     // Create a new node, set the type and then create a node_op_on
@@ -213,9 +254,14 @@ node* parse_add(TokenStream* token_stream, Token* tmp, TokenError** err) {
 
 
 /**
+ *  The logic to parse the given Token Stream into a node array
+ *  which then can be interpreted.
  * 
- *  The purpose of this is to take a token stream, convert
- *  each token into a node, then return them all as a nodearray.
+ *  Returns:
+ *      nodearray                          -    The nodearray built from the Token Stream 
+ * 
+ *  Params:
+ *      TokenStream - token_stream         -    The Token Stream to be parsed to a nodearray
  * 
  */
 nodearray* parse(TokenStream* token_stream) {
@@ -249,19 +295,25 @@ nodearray* parse(TokenStream* token_stream) {
                 nodearray_push(rt, parse_ldr(token_stream, tmp, &err));
             }
         }
+
+        // If the error is set to something, assume hell has broken loose.
         if (err) {
             tkn_error_print(err);
             exit(1);
         }
 
     }
+
+    // If the error is set to something, assume hell has broken loose.
     if (err) {
         tkn_error_print(err);
         exit(1);
     }
 
+    // Dump the contents of the nodearray rt.
     nodearray_dump(rt);
 
+    // Return rt
     return rt;
 
 }

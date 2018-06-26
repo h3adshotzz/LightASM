@@ -20,10 +20,13 @@
 #ifndef CONSTS_H
 #define CONSTS_H
 
+// Version controlling
 #define AQA_ASM_MAJOR_VERSION		1
 #define AQA_ASM_MINOR_VERSION		0
 #define AQA_ASM_BUILD				1231
 
+
+// Debug mode
 #define DEBUG_MODE                  0
 
 #endif /* CONSTS_H */

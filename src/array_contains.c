@@ -19,6 +19,18 @@
 
 #include "array_contains.h"
 
+
+/**
+ *  Check whether an array contains a given string
+ * 
+ *  Returns:
+ *      int             -   true or false
+ * 
+ *  Params:
+ *      char* val       -   The value we are checking
+ *      char** arr      -   The array
+ * 
+ */
 int array_contains(char* val, char** arr) {
     int i = 0;
     while (arr[i]) {

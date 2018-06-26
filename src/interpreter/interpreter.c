@@ -19,6 +19,10 @@
 
 #include "interpreter.h"
 
+/**
+ *  BEGIN REGISTER PROTOTYPING
+ * 
+ */
 static int register_state[REGISTER_COUNT] = {0,1,2,3,4,5,6,7,8,9,10,11};
 
 int get_reg_state(reg_t reg) {
@@ -46,54 +50,24 @@ void display_regs() {
     }
 
 }
+/**
+ *  End register prototyping
+ */
 
+
+/**
+ *  Start the interpreter
+ * 
+ *  Returns:
+ *      void
+ * 
+ *  Params:
+ *      TokenStream* tok_stream     -   The TokenStream to interpret.
+ * 
+ */
 void start_interpreter(TokenStream* tok_stream) {
     
+    // Parse the tok_stream to a nodearray.
     nodearray* test = parse(tok_stream);
-
-    /*TokenError* err = NULL;
-    Token* tkn = NULL;
-
-    //node_type *n_type = NULL;
-    //node_op_type *n_op_type = NULL;
-
-    while ((tkn = token_stream_next(tok_stream, &err))) {
-        token_dump(tkn);
-
-        char type = tkn->type;
-
-        if (type == TOK_COMMAND) {
-
-            debugf("Token is a command");
-            //n_type = NTYPE_MOV;
-
-        } else if (type == TOK_REGISTER) {
-
-            debugf("Token is a register");
-            //n_op_type = NOP_REGISTER;
-
-        } else if (type == TOK_NUMBER) {
-
-            debugf("Token is a number");
-            //n_op_type = NOP_LITERAL;
-
-        } else if (type == TOK_MEMORY) {
-
-            debugf("Token is a memory");
-
-        } else if (type == TOK_COMMA) {
-
-            debugf("Token is a comma");
-
-        } else if (type == TOK_LABEL) {
-
-            debugf("Token is a label");
-
-        } else {
-            errorf("Error, Token type unknown. Exiting...");
-            exit(0);
-        }
-
-    }*/
 
 }

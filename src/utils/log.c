@@ -25,9 +25,12 @@
  * gprintf. printf2 removes the need for the new line
  * operator when giving a string to output.
  * 
- * fnt - string to output
+ *  Returns:
+ *      int    
  * 
- * returns value of done
+ *  Params:
+ *      msg_type        -   The type of message to print
+ *      char* fmt       -   The contents to print
  */
 int __printlnf(msg_type msgType, char *fmt, ...) {
     
