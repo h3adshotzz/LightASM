@@ -62,10 +62,11 @@ typedef enum {
 } node_op_type;
 
 typedef struct {
-    int dest;
-    int source;
-    node_op_type type;
-    int value;
+    int dest;               // First reg
+    int source;             // Seccond reg
+    node_op_type type;      // Num or reg
+    int value;              // Number?
+
 } node_op_on;
 
 typedef struct {

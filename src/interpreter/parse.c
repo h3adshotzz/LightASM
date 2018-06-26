@@ -20,101 +20,195 @@
 #include "parse.h"
 
 
-node* parse_ldr(TokenStream* token_stream, Token* tmp) {
+/**
+ *  Checks whether the given Token Stream is of the type
+ *  TOK_COMMA. 
+ * 
+ *  Returns:
+ *      int     -   is the token a comma?
+ * 
+ *  Params:
+ *      TokenStream     -   The Token Stream to verify
+ *      TokenError      -   The Token Error currently use.
+ * 
+ */
+int is_comma(TokenStream* tmp, TokenError** err) {
+    Token* tmp2 = token_stream_next(tmp, err);
+    if (!tmp2) return 0;
+    if (tmp2->type == TOK_COMMA) {
+        return 1;
+    } 
+    return 0;
+}
+
+
+/**
+ *  Checks whether the given Token Stream is of the type
+ *  TOK_MEMORY
+ * 
+ *  Returns:
+ *      int             -   is the token a memory ref?
+ *  
+ *  Params:
+ *      TokenStream     -   The Token Stream to verify
+ *      TokenError      -   The Token Error currently in use
+ * 
+ */
+int get_memref(TokenStream* tmp, TokenError** err) {
+    Token* tmp2 = token_stream_next(tmp, err);
+    if (!tmp2) return 0;
+    if (tmp2->type == TOK_MEMORY) {
+        return atoi(tmp2->val);
+    }
+    *err = throw_token_error("Token not of type TOK_MEMORY");
+    return 0;
+}
+
+
+/**
+ *  Checks whether the given Token Stream is of the type
+ *  TOK_REGISTER
+ * 
+ *  Returns:
+ *      int             -   is the token a register?
+ *  
+ *  Params:
+ *      TokenStream     -   The Token Stream to verify
+ *      TokenError      -   The Token Error currently in use
+ * 
+ */
+int get_register(TokenStream* tmp, TokenError** err) {
+    Token* tmp2 = token_stream_next(tmp, err);
+    if (!tmp2) return 0;
+    if (tmp2->type == TOK_REGISTER) {
+        return atoi(tmp2->val);
+    }
+    *err = throw_token_error("Token not a of type TOK_REGISTER");
+    return 0;
+}
+
+
+/**
+ *  The logic to parse the LDR command from a token 
+ * 
+ */
+node* parse_ldr(TokenStream* token_stream, Token* tmp, TokenError** err) {
     
-    // Create this for when things go wrong.   
-    TokenError* err;
-
-    // Create a new node
-    node *node = malloc(sizeof(node));
-
-    debugf("Command type LDR");
-
-    // Set the node type and create a node_mem
+    // Create a new node, set the type and then create a node_mem
+    node* node = malloc(sizeof(node));
     node->type = NTYPE_LDR;
     node_mem* ndemem = malloc(sizeof(node_mem));
 
-    // Set the register.
-    tmp = token_stream_next(token_stream, &err);
-    ndemem->reg = atoi(tmp->val);
+    // Set the first register
+    ndemem->reg = get_register(token_stream, err);
+    if (*err) return NULL;
 
-    // Make sure the next token is a comma
-    if (token_stream_next(token_stream, &err)->type == TOK_COMMA) {
-        
-        // Set the memory reference
-        tmp = token_stream_next(token_stream, &err);
-        ndemem->mem = atoi(tmp->val);
-    } else {
-        // The token after the first operator wasn't a comma, so there was
-        // an error. Again these will be handled better in the future.
-        errorf("Unrecognised Token. Aborting...");
-        exit(0);
-    }
+    // Handle the first comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Set the memory reference
+    ndemem->mem = get_memref(token_stream, err);
 
     // Set the node value
     node->value = ndemem;
 
+    // Return the node
+    return node;
+
+}
+
+
+node* parse_mov(TokenStream* token_stream, Token* tmp, TokenError** err) {
+    
+    // Create a new node, set the type and then create a node_op
+    node *node = malloc(sizeof(node));
+    node->type = NTYPE_MOV;
+    node_op *op = malloc(sizeof(node_op));
+
+    // Set the first register
+    op->dest = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the first comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Check whether we are using a register or a number
+    tmp = token_stream_next(token_stream, err);
+    if (!tmp) return NULL;
+    if (tmp->type == TOK_REGISTER) {
+
+        // Set the type and value of op
+        op->type = NOP_REGISTER;
+        op->value = atoi(tmp->val);
+    } else if (tmp->type == TOK_NUMBER) {
+
+        // Set the type and value op
+        op->type = NOP_LITERAL;
+        op->value = atoi(tmp->val);
+    } else {
+
+        // There was an issue, throw a token error with a message.
+        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        return NULL;
+    }
+
+    // Set the nodes value 
+    node->value = op;
+
+    // Return the node
     return node;
 }
 
 
-node* parse_mov(TokenStream* token_stream, Token* tmp) {
-    
-    // Create this for when things go wrong
-    TokenError* err;
+node* parse_add(TokenStream* token_stream, Token* tmp, TokenError** err) {
 
-    // Set the tkn value to a char* for ease, also create a node.
+    // Create a new node, set the type and then create a node_op_on
     node* node = malloc(sizeof(node));
+    node_op_on *op_on = malloc(sizeof(node_op_on));
+    node->type = NTYPE_ADD;
 
-    debugf("Command type MOV");
+    // Set the first register.
+    op_on->dest = get_register(token_stream, err);
+    if (*err) return NULL;
 
-    // Set the node type to NTYPE_MOV
-    node->type = NTYPE_MOV;
+    // Handle the first comma
+    if (!is_comma(token_stream, err)) return NULL;
 
-    // Create a node_op for the two operators. Allocate some memory. 
-    node_op* op = malloc(sizeof(node_op));
+    // Set the seccond register
+    op_on->source = get_register(token_stream, err);
+    if (*err) return NULL;
 
+    // Handle the seccond comma
+    if (!is_comma(token_stream, err)) return NULL;
 
-    // Set the first register as the dest, because we are moving something into it
-    tmp = token_stream_next(token_stream, &err);         // This token_stream should be the first operator
-    op->dest = atoi(tmp->val);    // char* to int issue here
+    // Check whether we are using another register or number
+    tmp = token_stream_next(token_stream, err);
+    if (!tmp) return NULL;
+    if (tmp->type == TOK_REGISTER) {
 
+        // Set the type and value of op_on
+        op_on->type = NOP_REGISTER;
+        op_on->value = atoi(tmp->val);
 
-    // Make sure that the next token is a comma
-    if (token_stream_next(token_stream, &err)->type == TOK_COMMA) {
+    } else if (tmp->type == TOK_NUMBER) {
 
-        // check what type the seccond operator is.
-        tmp = token_stream_next(token_stream, &err);
-        if (tmp->type == TOK_REGISTER) {
+        // Set the type and value of op_on
+        op_on->type = NOP_LITERAL;
+        op_on->value = atoi(tmp->val);
 
-            // Set type and value accordingly
-            op->type = NOP_REGISTER;
-            op->value = atoi(tmp->val);
-
-        } else if (tmp->type == TOK_NUMBER) {
-
-            // Set type and value accordingly
-            op->type = NOP_LITERAL;
-            op->value = atoi(tmp->val);
-
-        } else {
-
-            // We didn't get a register or number, so we abort. 
-            // Syntax errors will be handled better in the future.
-            errorf("Unrecognised Token Value. Aborting...");
-            exit(0);
-        }
     } else {
-                    
-        // The token after the first operator wasn't a comma, so there was
-        // an error. Again these will be handled better in the future.
-        errorf("Unrecognised Token. Aborting...");
-        exit(0);
+
+        // There was an issue, throw a token error with a message.
+        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        return NULL;
     }
 
-    node->value = op;
+    // Assign value as op_on.
+    node->value = op_on;
 
+    // Return the node.
     return node;
+
 }
 
 
@@ -145,20 +239,25 @@ nodearray* parse(TokenStream* token_stream) {
              *  and build a nodearray accordingly. 
              */
             if (!strcmp(cmd, "MOV")) {
-                
                 // Parse MOV and push onto to rt.
-                nodearray_push(rt, parse_mov(token_stream, tmp));
-                
+                nodearray_push(rt, parse_mov(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "ADD")) {
+                // Prase ADD and push onto rt.
+                nodearray_push(rt, parse_add(token_stream, tmp, &err));
             } else if (!strcmp(cmd, "LDR")) {
-
                 // Prase LDR and push onto rt
-                nodearray_push(rt, parse_ldr(token_stream, tmp));
-
+                nodearray_push(rt, parse_ldr(token_stream, tmp, &err));
             }
-
-
+        }
+        if (err) {
+            tkn_error_print(err);
+            exit(1);
         }
 
+    }
+    if (err) {
+        tkn_error_print(err);
+        exit(1);
     }
 
     nodearray_dump(rt);

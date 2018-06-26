@@ -49,7 +49,7 @@ void display_regs() {
 
 void start_interpreter(TokenStream* tok_stream) {
     
-    //nodearray* test = parse(tok_stream);
+    nodearray* test = parse(tok_stream);
 
     /*TokenError* err = NULL;
     Token* tkn = NULL;

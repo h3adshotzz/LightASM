@@ -53,6 +53,23 @@ void node_dump(node* node) {
 
             break;
 
+        case NTYPE_ADD:
+            printlnf("Node Type:                                NTYPE_ADD");
+
+            node_op_on *node_op_on_value = (node_op_on *)node->value;
+
+            if (node_op_on_value->type == NOP_REGISTER) {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          R%d", node_op_on_value->value);
+            } else {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          #%d", node_op_on_value->value);
+            }
+
+            break;
+
         default:
             errorf("Unknown Node Type.");
     }
