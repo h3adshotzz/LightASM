@@ -845,16 +845,15 @@ node* parse_halt(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *      TokenStream - token_stream         -    The Token Stream to be parsed to a nodearray
  * 
  */
-nodearray* parse(TokenStream* token_stream) {
+nodearray* parse(TokenStream* token_stream, TokenError** err) {
 
     // Create the node array that we are going to return
     nodearray* rt = nodearray_new();
 
     // These will be needed later.
     Token* tmp = NULL;
-    TokenError* err = NULL;
 
-    while ((tmp = token_stream_next(token_stream, &err))) {     // This token_stream dump should be the command
+    while ((tmp = token_stream_next(token_stream, err))) {     // This token_stream dump should be the command
         
         // Check if the token is of the type TOK_COMMAND
         if (tmp->type == TOK_COMMAND){
@@ -867,67 +866,63 @@ nodearray* parse(TokenStream* token_stream) {
              */
             if (!strcmp(cmd, "LDR")) {
                 // Parse MOV and push onto to rt.
-                nodearray_push(rt, parse_ldr(token_stream, tmp, &err));
+                nodearray_push(rt, parse_ldr(token_stream, tmp, err));
             } else if (!strcmp(cmd, "STR")) {
                 // Parse STR and push onto rt
-                nodearray_push(rt, parse_str(token_stream, tmp, &err));
+                nodearray_push(rt, parse_str(token_stream, tmp, err));
             } else if (!strcmp(cmd, "ADD")) {
                 // Parse STR and push onto rt
-                nodearray_push(rt, parse_add(token_stream, tmp, &err));
+                nodearray_push(rt, parse_add(token_stream, tmp, err));
             } else if (!strcmp(cmd, "SUB")) {
                 // Parse STR and push onto rt
-                nodearray_push(rt, parse_sub(token_stream, tmp, &err));
+                nodearray_push(rt, parse_sub(token_stream, tmp, err));
             } else if (!strcmp(cmd, "MOV")) {
                 // Parse STR and push onto rt
-                nodearray_push(rt, parse_mov(token_stream, tmp, &err));
+                nodearray_push(rt, parse_mov(token_stream, tmp, err));
             } else if (!strcmp(cmd, "CMP")) {
                 // Parse STR and push onto rt
-                nodearray_push(rt, parse_cmp(token_stream, tmp, &err));
+                nodearray_push(rt, parse_cmp(token_stream, tmp, err));
             } else if (!strcmp(cmd, "AND")) {
                 // Parse STR and push onto rt
-                nodearray_push(rt, parse_and(token_stream, tmp, &err));
+                nodearray_push(rt, parse_and(token_stream, tmp, err));
             } else if (!strcmp(cmd, "CMP")) {
                 // Parse STR and push onto rt
-                nodearray_push(rt, parse_cmp(token_stream, tmp, &err));
+                nodearray_push(rt, parse_cmp(token_stream, tmp, err));
             } else if (!strcmp(cmd, "AND")) {
                 // Parse STR and push onto rt
-                nodearray_push(rt, parse_and(token_stream, tmp, &err));
+                nodearray_push(rt, parse_and(token_stream, tmp, err));
             } else if (!strcmp(cmd, "ORR")) {
                 // Parse STR and push onto rt
-                nodearray_push(rt, parse_orr(token_stream, tmp, &err));
+                nodearray_push(rt, parse_orr(token_stream, tmp, err));
             } else if (!strcmp(cmd, "EOR")) {
                 // Parse STR and push onto rt
-                nodearray_push(rt, parse_eor(token_stream, tmp, &err));
+                nodearray_push(rt, parse_eor(token_stream, tmp, err));
             } else if (!strcmp(cmd, "MVN")) {
                 // Parse STR and push onto rt
-                nodearray_push(rt, parse_mvn(token_stream, tmp, &err));
+                nodearray_push(rt, parse_mvn(token_stream, tmp, err));
             } else if (!strcmp(cmd, "LSL")) {
                 // Parse STR and push onto rt
-                nodearray_push(rt, parse_lsl(token_stream, tmp, &err));
+                nodearray_push(rt, parse_lsl(token_stream, tmp, err));
             } else if (!strcmp(cmd, "LSR")) {
                 // Parse STR and push onto rt
-                nodearray_push(rt, parse_lsr(token_stream, tmp, &err));
+                nodearray_push(rt, parse_lsr(token_stream, tmp, err));
             } else if (!strcmp(cmd, "B")) {
                 // Parse STR and push onto rt
-                //nodearray_push(rt, parse_b(token_stream, tmp, &err));
+                //nodearray_push(rt, parse_b(token_stream, tmp, err));
             } else if (!strcmp(cmd, "HALT")) {
-                nodearray_push(rt, parse_halt(token_stream, tmp, &err));
+                nodearray_push(rt, parse_halt(token_stream, tmp, err));
             }
+        } else {
+            *err = throw_token_error("Unexpected node");
         }
 
         // If the error is set to something, assume hell has broken loose.
-        if (err) {
-            tkn_error_print(err);
-            exit(1);
-        }
+        if (*err) return NULL;
 
     }
 
     // If the error is set to something, assume hell has broken loose.
-    if (err) {
-        tkn_error_print(err);
-        exit(1);
-    }
+    if (*err) return NULL;
 
     // Return rt
     return rt;

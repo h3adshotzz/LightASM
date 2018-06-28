@@ -116,7 +116,8 @@ interpreter_result_t interpet_arithmetic(node* node, RuntimeError** err) {
 void start_interpreter(TokenStream* tok_stream, RuntimeError** err) {
 
     // Parse the tok_stream to a nodearray.
-    nodearray* nodes = parse(tok_stream);
+    nodearray* nodes = parse(tok_stream, err);
+    if (*err) return;
 
     uint64_t ln_pos = 0;
 
