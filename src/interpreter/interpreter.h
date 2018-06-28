@@ -21,6 +21,7 @@
 #define INTERPRETER_H
 
 #include <stdio.h>
+#include <stdint.h>
 
 #include "../token.h"
 #include "../node.h"

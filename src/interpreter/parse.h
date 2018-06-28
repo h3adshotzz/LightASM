@@ -26,6 +26,6 @@
 #include "../array_contains.h"
 
 // Parse functions
-nodearray* parse(TokenStream* token_stream);
+nodearray* parse(TokenStream* token_stream, TokenError** err);
 
 #endif
