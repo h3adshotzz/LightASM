@@ -43,6 +43,7 @@ void node_dump(node* node) {
     switch(node->type) {
         case NTYPE_MOV:                     
             printlnf("Node Type:                                NTYPE_MOV");
+            //printlnf("Memory Reference:                         %d", node->memory_ref);
         
             node_op *node_op_value = (node_op *) node->value;
 
@@ -255,6 +256,7 @@ void nodearray_dump(nodearray* array) {
     printlnf("=== NODEARRAY DUMP ===");
     printlnf("Elements:             %d", array->elements);
     printlnf("Allocated:            %d", array->allocated);
+    printlnf("Base Address:         %d", array->base_address);
     printlnf("");
 
     // Cycle through each element.
@@ -282,6 +284,9 @@ nodearray* nodearray_new() {
     array->value = NULL;
     array->elements = 0;
     array->allocated = 0;
+
+    // Testing
+    array->base_address = 128;
 
     return array;
 }

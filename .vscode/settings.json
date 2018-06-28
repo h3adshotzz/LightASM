@@ -17,6 +17,7 @@
         "bitset": "c",
         "iterator": "c",
         "locale": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "__functional_03": "cpp"
     }
 }

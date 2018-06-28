@@ -137,6 +137,7 @@ void start_interpreter(TokenStream* tok_stream, RuntimeError** err) {
 
         if (*err) return;
 
+        nodearray_dump(nodes);
         display_regs();
         
     }

@@ -103,7 +103,7 @@ typedef struct {
 typedef struct node {
     node_type type;
     void* value;
-    char* test_id;      // This is just for testing and will be removed soon.
+    int memory_ref;
 } node;
 
 
@@ -119,6 +119,7 @@ typedef struct nodearray {
     node **value;
     int elements;
     int allocated;
+    int base_address;
 } nodearray;
 
 
