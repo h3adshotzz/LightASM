@@ -54,3 +54,39 @@ void tkn_error_print(TokenError* e) {
     // Print an error with the msg.
     errorf("Thrown: %s", e->msg);
 }
+
+
+/**
+ *  Throw the RuntimeError
+ * 
+ *  Returns:
+ *      RuntimeError      -   The RuntimeError thrown
+ * 
+ *  Params:
+ *      char* msg       -   The message to throw with the error
+ */
+RuntimeError* throw_runtime_error(char* msg) {
+
+    // Create the RuntimeError and allocate memory, set the message
+    RuntimeError* rterr = malloc(sizeof(RuntimeError));
+    rterr->msg = msg;
+
+    // Return the RuntimeError.
+    return rterr;
+
+} 
+
+
+/** 
+ *  Print the RuntimeError
+ * 
+ *  Returns:
+ *      void
+ * 
+ *  Params:
+ *      RuntimeError* e       -   The RuntimeError to the print.
+ */
+void rt_error_print(RuntimeError* e) {
+    // Print an error with the msg.
+    errorf("Thrown: %s", e->msg);
+}

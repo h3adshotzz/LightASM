@@ -27,6 +27,8 @@ void console_run() {
     debugf("Starting LightASM Console...");
     warningf("This is still experimental. Errors may occur");
 
+    reset_regs();
+
     // We run until we're given the notice.
     int repeat = 1;
 
@@ -57,8 +59,12 @@ void console_run() {
 
             TokenStream* tok_stream = token_stream_new(curline);
             
-            start_interpreter(tok_stream);
+            RuntimeError* err = NULL;
+            start_interpreter(tok_stream, &err);
 
+            if (err) {
+                rt_error_print(err);
+            }
         }
     }
 

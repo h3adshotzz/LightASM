@@ -929,9 +929,6 @@ nodearray* parse(TokenStream* token_stream) {
         exit(1);
     }
 
-    // Dump the contents of the nodearray rt.
-    nodearray_dump(rt);
-
     // Return rt
     return rt;
 

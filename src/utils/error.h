@@ -32,8 +32,21 @@ typedef struct {
 } TokenError;
 
 
+/**
+ *  The RuntimeError struct
+ * 
+ *  char* msg   -   The message to throw
+ */
+typedef struct {
+    char* msg;
+} RuntimeError;
+
+
 // Error Functions
 void tkn_error_print(TokenError* e);
 TokenError* throw_token_error(char* msg);
+
+void rt_error_print(RuntimeError* e);
+RuntimeError* throw_runtime_error(char* msg);
 
 #endif

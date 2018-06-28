@@ -49,7 +49,21 @@ typedef enum {
 
 // end prototyping
 
+
+typedef enum {
+    NONE,
+    EQUAL,
+    NOTEQUAL,
+    GREATER,
+    LESS,
+    SUCCESS,
+    FAILTURE  
+} interpreter_result_t;
+
+
 // Interpreter functions
-void start_interpreter(TokenStream* tok_stream);
+void start_interpreter(TokenStream* tok_stream, RuntimeError** err);
+
+void reset_regs();
 
 #endif
