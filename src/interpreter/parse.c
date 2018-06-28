@@ -227,6 +227,21 @@ node* parse_mov(TokenStream* token_stream, Token* tmp, TokenError** err) {
 }
 
 
+/**
+ *  The logic to parse the CMP command from a Token Stream
+ *  to a single node. NULL can be returned if the token
+ *  isn't of the correct type, which can then be handled else-
+ *  where. 
+ * 
+ *  Returns:
+ *      node                                -   The node built from the Token Stream
+ * 
+ *  Params:
+ *      TokenStream - token_stream          -   The Token Stream currently being used
+ *      Token - tmp                         -   A temp Token to store the current TokenStream.
+ *      TokenError - err                    -   The Token Error currently in use.
+ * 
+ */
 node* parse_cmp(TokenStream* token_stream, Token* tmp, TokenError** err) {
 
     // Create a new node, set the type and then create a node_op
@@ -338,6 +353,488 @@ node* parse_add(TokenStream* token_stream, Token* tmp, TokenError** err) {
 
 
 /**
+ *  The logic to parse the SUB command from a Token Stream
+ *  to a single node. NULL can be returned if the token
+ *  isn't of the correct type, which can then be handled else-
+ *  where. 
+ * 
+ *  Returns:
+ *      node                                -   The node built from the Token Stream
+ * 
+ *  Params:
+ *      TokenStream - token_stream          -   The Token Stream currently being used
+ *      Token - tmp                         -   A temp Token to store the current TokenStream.
+ *      TokenError - err                    -   The Token Error currently in use.
+ * 
+ */
+node* parse_sub(TokenStream* token_stream, Token* tmp, TokenError** err) {
+
+    // Create a new node, set the type and then create a node_op_on
+    node* node = malloc(sizeof(node));
+    node_op_on *op_on = malloc(sizeof(node_op_on));
+    node->type = NTYPE_SUB;
+
+    // Set the first register.
+    op_on->dest = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the first comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Set the seccond register
+    op_on->source = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the seccond comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Check whether we are using another register or number
+    tmp = token_stream_next(token_stream, err);
+    if (!tmp) return NULL;
+    if (tmp->type == TOK_REGISTER) {
+
+        // Set the type and value of op_on
+        op_on->type = NOP_REGISTER;
+        op_on->value = atoi(tmp->val);
+
+    } else if (tmp->type == TOK_NUMBER) {
+
+        // Set the type and value of op_on
+        op_on->type = NOP_LITERAL;
+        op_on->value = atoi(tmp->val);
+
+    } else {
+
+        // There was an issue, throw a token error with a message.
+        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        return NULL;
+    }
+
+    // Assign value as op_on.
+    node->value = op_on;
+
+    // Return the node.
+    return node;
+
+}
+
+
+/**
+ *  The logic to parse the AND command from a Token Stream
+ *  to a single node. NULL can be returned if the token
+ *  isn't of the correct type, which can then be handled else-
+ *  where. 
+ * 
+ *  Returns:
+ *      node                                -   The node built from the Token Stream
+ * 
+ *  Params:
+ *      TokenStream - token_stream          -   The Token Stream currently being used
+ *      Token - tmp                         -   A temp Token to store the current TokenStream.
+ *      TokenError - err                    -   The Token Error currently in use.
+ * 
+ */
+node* parse_and(TokenStream* token_stream, Token* tmp, TokenError** err) {
+
+    // Create a new node, set the type and then create a node_op_on
+    node* node = malloc(sizeof(node));
+    node_op_on *op_on = malloc(sizeof(node_op_on));
+    node->type = NTYPE_AND;
+
+    // Set the first register.
+    op_on->dest = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the first comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Set the seccond register
+    op_on->source = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the seccond comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Check whether we are using another register or number
+    tmp = token_stream_next(token_stream, err);
+    if (!tmp) return NULL;
+    if (tmp->type == TOK_REGISTER) {
+
+        // Set the type and value of op_on
+        op_on->type = NOP_REGISTER;
+        op_on->value = atoi(tmp->val);
+
+    } else if (tmp->type == TOK_NUMBER) {
+
+        // Set the type and value of op_on
+        op_on->type = NOP_LITERAL;
+        op_on->value = atoi(tmp->val);
+
+    } else {
+
+        // There was an issue, throw a token error with a message.
+        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        return NULL;
+    }
+
+    // Assign value as op_on.
+    node->value = op_on;
+
+    // Return the node.
+    return node;
+
+}
+
+
+/**
+ *  The logic to parse the ORR command from a Token Stream
+ *  to a single node. NULL can be returned if the token
+ *  isn't of the correct type, which can then be handled else-
+ *  where. 
+ * 
+ *  Returns:
+ *      node                                -   The node built from the Token Stream
+ * 
+ *  Params:
+ *      TokenStream - token_stream          -   The Token Stream currently being used
+ *      Token - tmp                         -   A temp Token to store the current TokenStream.
+ *      TokenError - err                    -   The Token Error currently in use.
+ * 
+ */
+node* parse_orr(TokenStream* token_stream, Token* tmp, TokenError** err) {
+
+    // Create a new node, set the type and then create a node_op_on
+    node* node = malloc(sizeof(node));
+    node_op_on *op_on = malloc(sizeof(node_op_on));
+    node->type = NTYPE_ORR;
+
+    // Set the first register.
+    op_on->dest = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the first comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Set the seccond register
+    op_on->source = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the seccond comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Check whether we are using another register or number
+    tmp = token_stream_next(token_stream, err);
+    if (!tmp) return NULL;
+    if (tmp->type == TOK_REGISTER) {
+
+        // Set the type and value of op_on
+        op_on->type = NOP_REGISTER;
+        op_on->value = atoi(tmp->val);
+
+    } else if (tmp->type == TOK_NUMBER) {
+
+        // Set the type and value of op_on
+        op_on->type = NOP_LITERAL;
+        op_on->value = atoi(tmp->val);
+
+    } else {
+
+        // There was an issue, throw a token error with a message.
+        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        return NULL;
+    }
+
+    // Assign value as op_on.
+    node->value = op_on;
+
+    // Return the node.
+    return node;
+
+}
+
+
+/**
+ *  The logic to parse the EOR command from a Token Stream
+ *  to a single node. NULL can be returned if the token
+ *  isn't of the correct type, which can then be handled else-
+ *  where. 
+ * 
+ *  Returns:
+ *      node                                -   The node built from the Token Stream
+ * 
+ *  Params:
+ *      TokenStream - token_stream          -   The Token Stream currently being used
+ *      Token - tmp                         -   A temp Token to store the current TokenStream.
+ *      TokenError - err                    -   The Token Error currently in use.
+ * 
+ */
+node* parse_eor(TokenStream* token_stream, Token* tmp, TokenError** err) {
+
+    // Create a new node, set the type and then create a node_op_on
+    node* node = malloc(sizeof(node));
+    node_op_on *op_on = malloc(sizeof(node_op_on));
+    node->type = NTYPE_EOR;
+
+    // Set the first register.
+    op_on->dest = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the first comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Set the seccond register
+    op_on->source = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the seccond comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Check whether we are using another register or number
+    tmp = token_stream_next(token_stream, err);
+    if (!tmp) return NULL;
+    if (tmp->type == TOK_REGISTER) {
+
+        // Set the type and value of op_on
+        op_on->type = NOP_REGISTER;
+        op_on->value = atoi(tmp->val);
+
+    } else if (tmp->type == TOK_NUMBER) {
+
+        // Set the type and value of op_on
+        op_on->type = NOP_LITERAL;
+        op_on->value = atoi(tmp->val);
+
+    } else {
+
+        // There was an issue, throw a token error with a message.
+        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        return NULL;
+    }
+
+    // Assign value as op_on.
+    node->value = op_on;
+
+    // Return the node.
+    return node;
+
+}
+
+
+/**
+ *  The logic to parse the MVN command from a Token Stream
+ *  to a single node. NULL can be returned if the token
+ *  isn't of the correct type, which can then be handled else-
+ *  where. 
+ * 
+ *  Returns:
+ *      node                                -   The node built from the Token Stream
+ * 
+ *  Params:
+ *      TokenStream - token_stream          -   The Token Stream currently being used
+ *      Token - tmp                         -   A temp Token to store the current TokenStream.
+ *      TokenError - err                    -   The Token Error currently in use.
+ * 
+ */
+node* parse_mvn(TokenStream* token_stream, Token* tmp, TokenError** err) {
+    
+    // Create a new node, set the type and then create a node_op
+    node *node = malloc(sizeof(node));
+    node->type = NTYPE_MVN;
+    node_op *op = malloc(sizeof(node_op));
+
+    // Set the first register
+    op->dest = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the first comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Check whether we are using a register or a number
+    tmp = token_stream_next(token_stream, err);
+    if (!tmp) return NULL;
+    if (tmp->type == TOK_REGISTER) {
+
+        // Set the type and value of op
+        op->type = NOP_REGISTER;
+        op->value = atoi(tmp->val);
+    } else if (tmp->type == TOK_NUMBER) {
+
+        // Set the type and value op
+        op->type = NOP_LITERAL;
+        op->value = atoi(tmp->val);
+    } else {
+
+        // There was an issue, throw a token error with a message.
+        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        return NULL;
+    }
+
+    // Set the nodes value 
+    node->value = op;
+
+    // Return the node
+    return node;
+
+}
+
+
+/**
+ *  The logic to parse the LSL command from a Token Stream
+ *  to a single node. NULL can be returned if the token
+ *  isn't of the correct type, which can then be handled else-
+ *  where. 
+ * 
+ *  Returns:
+ *      node                                -   The node built from the Token Stream
+ * 
+ *  Params:
+ *      TokenStream - token_stream          -   The Token Stream currently being used
+ *      Token - tmp                         -   A temp Token to store the current TokenStream.
+ *      TokenError - err                    -   The Token Error currently in use.
+ * 
+ */
+node* parse_lsl(TokenStream* token_stream, Token* tmp, TokenError** err) {
+
+    // Create a new node, set the type and then create a node_op_on
+    node* node = malloc(sizeof(node));
+    node_op_on *op_on = malloc(sizeof(node_op_on));
+    node->type = NTYPE_LSL;
+
+    // Set the first register.
+    op_on->dest = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the first comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Set the seccond register
+    op_on->source = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the seccond comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Check whether we are using another register or number
+    tmp = token_stream_next(token_stream, err);
+    if (!tmp) return NULL;
+    if (tmp->type == TOK_REGISTER) {
+
+        // Set the type and value of op_on
+        op_on->type = NOP_REGISTER;
+        op_on->value = atoi(tmp->val);
+
+    } else if (tmp->type == TOK_NUMBER) {
+
+        // Set the type and value of op_on
+        op_on->type = NOP_LITERAL;
+        op_on->value = atoi(tmp->val);
+
+    } else {
+
+        // There was an issue, throw a token error with a message.
+        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        return NULL;
+    }
+
+    // Assign value as op_on.
+    node->value = op_on;
+
+    // Return the node.
+    return node;
+
+}
+
+
+/**
+ *  The logic to parse the LSR command from a Token Stream
+ *  to a single node. NULL can be returned if the token
+ *  isn't of the correct type, which can then be handled else-
+ *  where. 
+ * 
+ *  Returns:
+ *      node                                -   The node built from the Token Stream
+ * 
+ *  Params:
+ *      TokenStream - token_stream          -   The Token Stream currently being used
+ *      Token - tmp                         -   A temp Token to store the current TokenStream.
+ *      TokenError - err                    -   The Token Error currently in use.
+ * 
+ */
+node* parse_lsr(TokenStream* token_stream, Token* tmp, TokenError** err) {
+
+    // Create a new node, set the type and then create a node_op_on
+    node* node = malloc(sizeof(node));
+    node_op_on *op_on = malloc(sizeof(node_op_on));
+    node->type = NTYPE_LSR;
+
+    // Set the first register.
+    op_on->dest = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the first comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Set the seccond register
+    op_on->source = get_register(token_stream, err);
+    if (*err) return NULL;
+
+    // Handle the seccond comma
+    if (!is_comma(token_stream, err)) return NULL;
+
+    // Check whether we are using another register or number
+    tmp = token_stream_next(token_stream, err);
+    if (!tmp) return NULL;
+    if (tmp->type == TOK_REGISTER) {
+
+        // Set the type and value of op_on
+        op_on->type = NOP_REGISTER;
+        op_on->value = atoi(tmp->val);
+
+    } else if (tmp->type == TOK_NUMBER) {
+
+        // Set the type and value of op_on
+        op_on->type = NOP_LITERAL;
+        op_on->value = atoi(tmp->val);
+
+    } else {
+
+        // There was an issue, throw a token error with a message.
+        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        return NULL;
+    }
+
+    // Assign value as op_on.
+    node->value = op_on;
+
+    // Return the node.
+    return node;
+
+}
+
+
+/**
+ *  The logic to parse the HALT command from a Token Stream
+ *  to a single node. 
+ * 
+ *  Returns:
+ *      node                                -   The node built from the Token Stream
+ * 
+ *  Params:
+ *      TokenStream - token_stream          -   The Token Stream currently being used
+ *      Token - tmp                         -   A temp Token to store the current TokenStream.
+ *      TokenError - err                    -   The Token Error currently in use.
+ * 
+ */
+node* parse_halt(TokenStream* token_stream, Token* tmp, TokenError** err) {
+
+    node* node = malloc(sizeof(node));
+    node->type = NTYPE_HALT;
+
+    return node;
+}
+
+
+/**
  *  The logic to parse the given Token Stream into a node array
  *  which then can be interpreted.
  * 
@@ -368,21 +865,53 @@ nodearray* parse(TokenStream* token_stream) {
              *  This if-else block will go through each type of command
              *  and build a nodearray accordingly. 
              */
-            if (!strcmp(cmd, "MOV")) {
+            if (!strcmp(cmd, "LDR")) {
                 // Parse MOV and push onto to rt.
-                nodearray_push(rt, parse_mov(token_stream, tmp, &err));
-            } else if (!strcmp(cmd, "ADD")) {
-                // Prase ADD and push onto rt.
-                nodearray_push(rt, parse_add(token_stream, tmp, &err));
-            } else if (!strcmp(cmd, "LDR")) {
-                // Prase LDR and push onto rt
                 nodearray_push(rt, parse_ldr(token_stream, tmp, &err));
             } else if (!strcmp(cmd, "STR")) {
                 // Parse STR and push onto rt
                 nodearray_push(rt, parse_str(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "ADD")) {
+                // Parse STR and push onto rt
+                nodearray_push(rt, parse_add(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "SUB")) {
+                // Parse STR and push onto rt
+                nodearray_push(rt, parse_sub(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "MOV")) {
+                // Parse STR and push onto rt
+                nodearray_push(rt, parse_mov(token_stream, tmp, &err));
             } else if (!strcmp(cmd, "CMP")) {
                 // Parse STR and push onto rt
                 nodearray_push(rt, parse_cmp(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "AND")) {
+                // Parse STR and push onto rt
+                nodearray_push(rt, parse_and(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "CMP")) {
+                // Parse STR and push onto rt
+                nodearray_push(rt, parse_cmp(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "AND")) {
+                // Parse STR and push onto rt
+                nodearray_push(rt, parse_and(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "ORR")) {
+                // Parse STR and push onto rt
+                nodearray_push(rt, parse_orr(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "EOR")) {
+                // Parse STR and push onto rt
+                nodearray_push(rt, parse_eor(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "MVN")) {
+                // Parse STR and push onto rt
+                nodearray_push(rt, parse_mvn(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "LSL")) {
+                // Parse STR and push onto rt
+                nodearray_push(rt, parse_lsl(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "LSR")) {
+                // Parse STR and push onto rt
+                nodearray_push(rt, parse_lsr(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "B")) {
+                // Parse STR and push onto rt
+                //nodearray_push(rt, parse_b(token_stream, tmp, &err));
+            } else if (!strcmp(cmd, "HALT")) {
+                nodearray_push(rt, parse_halt(token_stream, tmp, &err));
             }
         }
 

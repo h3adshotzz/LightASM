@@ -108,6 +108,126 @@ void node_dump(node* node) {
 
             break;
 
+        case NTYPE_SUB:
+            printlnf("Node Type:                                NTYPE_SUB");
+
+            node_op_on_value = (node_op_on *)node->value;
+
+            if (node_op_on_value->type == NOP_REGISTER) {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          R%d", node_op_on_value->value);
+            } else {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          #%d", node_op_on_value->value);
+            }
+
+            break;
+
+        case NTYPE_AND:
+            printlnf("Node Type:                                NTYPE_AND");
+
+            node_op_on_value = (node_op_on *)node->value;
+
+            if (node_op_on_value->type == NOP_REGISTER) {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          R%d", node_op_on_value->value);
+            } else {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          #%d", node_op_on_value->value);
+            }
+
+            break;
+
+        case NTYPE_ORR:
+            printlnf("Node Type:                                NTYPE_ORR");
+
+            node_op_on_value = (node_op_on *)node->value;
+
+            if (node_op_on_value->type == NOP_REGISTER) {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          R%d", node_op_on_value->value);
+            } else {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          #%d", node_op_on_value->value);
+            }
+
+            break;
+
+        case NTYPE_EOR:
+            printlnf("Node Type:                                NTYPE_EOR");
+
+            node_op_on_value = (node_op_on *)node->value;
+
+            if (node_op_on_value->type == NOP_REGISTER) {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          R%d", node_op_on_value->value);
+            } else {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          #%d", node_op_on_value->value);
+            }
+
+            break;
+
+        case NTYPE_MVN:                     
+            printlnf("Node Type:                                NTYPE_MVN");
+        
+            node_op_value = (node_op *) node->value;
+
+            if (node_op_value->type == NOP_REGISTER) {
+                printlnf("Operation Destination:                    R%d", node_op_value->dest);
+                printlnf("Operation Value:                          R%d", node_op_value->value);
+            } else {
+                printlnf("Operation Destination:                    R%d", node_op_value->dest);
+                printlnf("Operation Value:                          #%d", node_op_value->value);
+            }
+
+            break;
+
+        case NTYPE_LSL:
+            printlnf("Node Type:                                NTYPE_LSL");
+
+            node_op_on_value = (node_op_on *)node->value;
+
+            if (node_op_on_value->type == NOP_REGISTER) {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          R%d", node_op_on_value->value);
+            } else {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          #%d", node_op_on_value->value);
+            }
+
+            break;
+
+        case NTYPE_LSR:
+            printlnf("Node Type:                                NTYPE_LSR");
+
+            node_op_on_value = (node_op_on *)node->value;
+
+            if (node_op_on_value->type == NOP_REGISTER) {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          R%d", node_op_on_value->value);
+            } else {
+                printlnf("Operation Destination:                    R%d", node_op_on_value->dest);
+                printlnf("Operation Source:                         R%d", node_op_on_value->source);
+                printlnf("Operation Value:                          #%d", node_op_on_value->value);
+            }
+
+            break;
+
+        case NTYPE_HALT:
+            printlnf("Node Type:                                NTYPE_HALT");
+
         default:
             errorf("Unknown Node Type.");
     }
