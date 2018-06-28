@@ -127,5 +127,6 @@ typedef struct nodearray {
 nodearray* nodearray_new();
 int nodearray_push(nodearray* array, node* item);
 void nodearray_dump(nodearray* array);
+void node_dump(node* node);
 
 #endif

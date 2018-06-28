@@ -20,6 +20,8 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
+#include "../node.h"
+
 #include "../utils/log.h"
 
 typedef enum {
@@ -27,15 +29,15 @@ typedef enum {
     PAGE_TYPE_VAL
 } page_type;
 
-typedef struct {
+typedef struct address_page_t {
     void* value;
     page_type type;             // The type of page
 } address_page_t;
 
-typedef struct {
+typedef struct address_space_t {
     int elements;               // The amount of allocated elements, minimum 128
     int allocated;              // The ammount of elements allocated, again minimum 128
-    address_page_t **pages;     // The pages of the address space
+    address_page_t** pages;     // The pages of the address space
 } address_space_t;
 
 
