@@ -59,25 +59,29 @@ void address_page_dump(address_page_t* page) {
     /*
         EXEC_BAD_ACCESS occurs here.
     */
-    page_type type = page->type;
+    if (page->type != NULL) {
+        page_type type = page->type;
 
-    switch (type) {
-        case PAGE_TYPE_NODE:
-            printlnf("Page Type:                    PAGE_TYPE_NODE");
+        switch (type) {
+            case PAGE_TYPE_NODE:
+                printlnf("Page Type:                    PAGE_TYPE_NODE");
 
-            node *nde = malloc(sizeof(node));
-            nde = (node *) page->value;
-            node_dump(nde);
-            break;
+                node *nde = malloc(sizeof(node));
+                nde = (node *) page->value;
+                node_dump(nde);
+                break;
 
-        case PAGE_TYPE_VAL:
-            printlnf("Page Type:                    PAGE_TYPE_VAL");
-            printlnf("Value:                        %d", (int) page->value);
-            break;
+            case PAGE_TYPE_VAL:
+                printlnf("Page Type:                    PAGE_TYPE_VAL");
+                printlnf("Value:                        %d", (int) page->value);
+                break;
 
-        default:
-            errorf("Unknown page type. Aborting!");
-            exit(1);
+            default:
+                errorf("Unknown page type. Aborting!");
+                exit(1);
+        }
+    } else {
+        errorf("Page Type is NULL. Aborting!");
     }
 }
 
@@ -92,50 +96,89 @@ void address_space_dump(address_space_t* spc) {
     printlnf("Allocated:            %d", spc->allocated);
     printlnf("");
 
-    for (int i = 0; i < spc->allocated; i++) {
-        if (spc->pages == NULL) {
-            errorf("Pages are NULL. Aborting");
-            exit(1);
-        } else {
+    if (spc->pages == NULL) {
+        errorf("Pages are NULL. Aborting");
+        exit(1);
+    } else {
+        printlnf("Pages Size:            %d", sizeof(spc->pages));
+        printlnf("");
+        for (int i = 0; i < spc->allocated; i++) {
             address_page_dump(spc->pages[i]);
         }
     }
-
 }
 
 int address_space_push(address_page_t* page, address_space_t* addr) {
     
+    if (addr->allocated == addr->elements) {
+
+        if (addr->allocated == 0) {
+            addr->allocated = 130;      // 128 + 2 extra
+        } else {
+            addr->allocated += 2;
+        }
+
+        void *tmp = realloc(addr->pages, (addr->allocated * sizeof(address_page_t)));
+
+        if (!tmp) errorf("Could not allocated memory. Aborting!");
+
+        addr->pages = (address_page_t**) tmp;
+
+        if (page->type == PAGE_TYPE_VAL) {
+            for (int i = 0; i < 127; i++) {
+                if (addr->pages[i] == NULL) {
+                    addr->pages[i] = page;
+                    i = 127;
+                }
+            }
+        } else if (page->type == PAGE_TYPE_NODE) {
+            if (addr->elements < 127) {
+
+            }
+        }
+    }
+
+/*
+
     if (!addr->allocated) {
         return 0;
     } else {
-        void* tmp = realloc(addr->pages, (10 * sizeof(address_page_t)));
+        void* tmp = realloc(addr->pages, addr->allocated * sizeof(address_page_t));
 
         if (!tmp) {
             errorf("Could not allocated memory. Aborting!");
         }
 
-        addr->pages = (address_page_t *) tmp;
+        addr->pages = (address_page_t **) tmp;
 
-        if (addr->elements > 128) {
-            addr->pages[addr->elements] = page;
+        if (page->type == PAGE_TYPE_NODE) {
+            if (addr->elements > 128) {
+                addr->pages[addr->elements] = page;
+            } else {
+                addr->pages[128] = page;
+            }
         } else {
-            addr->pages[128] = page;
+            for (int i = 0; i < 128; i++) {
+                if (addr->pages[i] == NULL) {
+                    addr->pages[i] = page;
+                } 
+            }
         }
 
         addr->elements++;
 
         return addr->elements;
-    }
+    }*/
 
 }
 
-address_space_t* address_space_new(int pages) {
+address_space_t* address_space_new() {
 
     // Create a new address space
     address_space_t *rt = malloc(sizeof(address_space_t));
 
-    rt->allocated = 128 + pages;        // We allocated 128 pages and whatever extra was requested
-    rt->elements = 128;                 // We have 128 that are already filled. 
+    rt->allocated = 128 + 1;        // We allocated 128 pages and 1 for a node
+    rt->elements = 0;                 // We have 128 that are already filled. 
     rt->pages = NULL;
 
     // Cycle through (hopefully) 128 times 
@@ -145,7 +188,7 @@ address_space_t* address_space_new(int pages) {
         address_page_t *pg = malloc(sizeof(address_page_t));
 
         // Set the type to PAGE_TYPE_VAL and the default value to 0
-        pg->type = PAGE_TYPE_VAL;
+        pg->type = PAGE_TYPE_NODE;
         pg->value = 0;
 
         // Push the page onto the address space
