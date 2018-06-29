@@ -50,6 +50,10 @@
         To work out the addres of a instruction, You add the position of the node
         in the array onto the base address.
 
+
+    This is kind of a mess at the moment, as of 29th june 2018 at 2:54 GMT.
+    ... i might fix it and forget to remove this message, idk
+
 */
 
 #include "memory.h"
@@ -110,6 +114,16 @@ void address_space_dump(address_space_t* spc) {
 
 int address_space_push(address_page_t* page, address_space_t* addr) {
     
+    /*
+
+        Basically, this should do the following
+
+        - if type is a val, add at a free position under 128
+
+        - if type is a node, add at a free posiiton under the cap, and over 128
+
+    */
+
     if (addr->allocated == addr->elements) {
 
         if (addr->allocated == 0) {
@@ -133,9 +147,14 @@ int address_space_push(address_page_t* page, address_space_t* addr) {
             }
         } else if (page->type == PAGE_TYPE_NODE) {
             if (addr->elements < 127) {
-
+                addr->elements = (127 - addr->elements) + 1;
+                addr->pages[addr->elements] = page;
+            } else {
+                addr->pages[addr->elements] = page;
             }
         }
+
+        return addr->elements;
     }
 
 /*
@@ -178,7 +197,7 @@ address_space_t* address_space_new() {
     address_space_t *rt = malloc(sizeof(address_space_t));
 
     rt->allocated = 128 + 1;        // We allocated 128 pages and 1 for a node
-    rt->elements = 0;                 // We have 128 that are already filled. 
+    rt->elements = 128;                 // We have 128 that are already filled. 
     rt->pages = NULL;
 
     // Cycle through (hopefully) 128 times 
@@ -188,8 +207,10 @@ address_space_t* address_space_new() {
         address_page_t *pg = malloc(sizeof(address_page_t));
 
         // Set the type to PAGE_TYPE_VAL and the default value to 0
-        pg->type = PAGE_TYPE_NODE;
+        pg->type = PAGE_TYPE_VAL;
         pg->value = 0;
+
+        address_page_dump(pg);
 
         // Push the page onto the address space
         address_space_push(pg, rt);

@@ -42,7 +42,7 @@ typedef struct address_space_t {
 
 
 // Functions
-address_space_t* address_space_new(int pages);
+address_space_t* address_space_new();
 void address_space_dump(address_space_t* spc);
 
 #endif
