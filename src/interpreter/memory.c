@@ -54,6 +54,12 @@
     This is kind of a mess at the moment, as of 29th june 2018 at 2:54 GMT.
     ... i might fix it and forget to remove this message, idk
 
+
+    ......
+    I have another idea...
+
+    Two address_space_t's are used. One for program data, one for node addresses.
+
 */
 
 #include "memory.h"
