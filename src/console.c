@@ -41,6 +41,9 @@ void console_run() {
      */
     char *curline = malloc(14);  
 
+    // Testing
+    
+
     while(repeat) {
 
         // Get input

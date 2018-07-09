@@ -25,24 +25,20 @@
 #include "../utils/log.h"
 
 typedef enum {
-    PAGE_TYPE_NODE,
-    PAGE_TYPE_VAL
-} page_type;
-
-typedef struct address_page_t {
-    void* value;
-    page_type type;             // The type of page
-} address_page_t;
+    SPACE_TYPE_NODE,
+    SPACE_TYPE_VAL
+} space_type;
 
 typedef struct address_space_t {
-    int elements;               // The amount of allocated elements, minimum 128
-    int allocated;              // The ammount of elements allocated, again minimum 128
-    address_page_t** pages;     // The pages of the address space
+    space_type type;
+    void** pages;
+    int elements;
+    int allocated;
 } address_space_t;
 
 
-// Functions
-address_space_t* address_space_new();
-void address_space_dump(address_space_t* spc);
+address_space_t* address_space_new(space_type type);
+void _tst_spc_dump(address_space_t* spc);
+int address_space_push(address_space_t* spc, void* elm);
 
 #endif

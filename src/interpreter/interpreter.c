@@ -125,6 +125,14 @@ void start_interpreter(TokenStream* tok_stream, RuntimeError** err) {
 
         node* curr_node = nodes->value[ln_pos];
 
+        // TESTING
+
+
+        
+
+
+        // END TESTING
+
         switch(curr_node->type) {
             case NTYPE_HALT:
                 return;
