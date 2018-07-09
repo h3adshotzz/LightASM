@@ -112,16 +112,25 @@ interpreter_result_t interpret_memory(node* node, address_space_t* usr_space, Ru
 
     if (node->type == NTYPE_LDR) {
 
-        // SEG FAULT
-
         int a = address_space_get_ref(usr_space, mem->mem);
+        if (*err) return FAILTURE;
+
         printlnf("Got contents of memref %d as %d", mem->mem, a);
-
         set_new_reg_state(mem->reg, a, err);
+        if (*err) return FAILTURE;
 
-        return 0;
+    } else if (node->type == NTYPE_STR) {
+
+        int b = get_reg_state(mem->reg, err);
+        if (*err) return FAILTURE;
+
+        printlnf("Got reg state of R%d as %d. Setting memref %d", mem->reg, b, mem->mem);
+        address_space_set_ref(usr_space, mem->mem, b);
+        
 
     }
+
+    return SUCCESS;
 
 
 }

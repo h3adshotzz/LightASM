@@ -67,6 +67,19 @@ void _tst_spc_dump(address_space_t* spc) {
     }
 }
 
+/**
+ * 
+ *  NOTES:
+ * 
+ *  - The address space manipulation functions need to be able to 
+ *      work with both int and nodes. Fix this. 
+ * 
+ */
+
+void address_space_set_ref(address_space_t* spc, int ref, int value) {
+    spc->pages[ref] = value;
+}
+
 int address_space_get_ref(address_space_t* spc, int ref) {
     int tmp = (int) spc->pages[ref];
     if (tmp != NULL) {
@@ -107,6 +120,7 @@ address_space_t* address_space_new(space_type type) {
 
         rt->pages = malloc(sizeof(int) * rt->allocated);    // Allocate enough memory. 
 
+        // This is just for testing purposes.
         rt->pages[0] = 12;
         rt->pages[1] = 13;
         rt->pages[2] = 14;
