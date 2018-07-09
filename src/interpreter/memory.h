@@ -40,5 +40,6 @@ typedef struct address_space_t {
 address_space_t* address_space_new(space_type type);
 void _tst_spc_dump(address_space_t* spc);
 int address_space_push(address_space_t* spc, void* elm);
+int address_space_get_ref(address_space_t* spc, int ref);
 
 #endif

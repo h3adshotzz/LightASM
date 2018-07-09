@@ -23,6 +23,8 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include "memory.h"
+
 #include "../token.h"
 #include "../node.h"
 
@@ -63,6 +65,7 @@ typedef enum {
 
 
 // Interpreter functions
-void start_interpreter(TokenStream* tok_stream, RuntimeError** err);
+void start_interpreter(TokenStream* tok_stream, address_space_t* usr_space, address_space_t* node_space, RuntimeError** err);
+
 
 #endif

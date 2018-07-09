@@ -24,6 +24,7 @@
 #include <string.h>
 
 #include "interpreter/interpreter.h"
+#include "interpreter/memory.h"
 
 #include "consts.h"
 #include "token.h"

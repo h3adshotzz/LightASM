@@ -67,6 +67,15 @@ void _tst_spc_dump(address_space_t* spc) {
     }
 }
 
+int address_space_get_ref(address_space_t* spc, int ref) {
+    int tmp = (int) spc->pages[ref];
+    if (tmp != NULL) {
+        return tmp;
+    } else {
+        return 0;
+    }
+}
+
 int address_space_push(address_space_t* spc, void* elm) {
 
     if (spc->type == SPACE_TYPE_VAL) {
@@ -94,9 +103,14 @@ address_space_t* address_space_new(space_type type) {
 
         rt->type = SPACE_TYPE_VAL;
         rt->allocated = 128;        // We allocated 128 for the user data.
-        rt->elements = 0;           // There currently isn't anything in it. 
+        rt->elements = 5;           // There currently isn't anything in it. 
 
         rt->pages = malloc(sizeof(int) * rt->allocated);    // Allocate enough memory. 
+
+        rt->pages[0] = 12;
+        rt->pages[1] = 13;
+        rt->pages[2] = 14;
+        rt->pages[3] = 15;
 
         return rt;
 

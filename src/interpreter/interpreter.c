@@ -70,7 +70,7 @@ int interpet_operand(node_op_type t, int value, RuntimeError** err) {
     }
 }
 
-interpreter_result_t interpet_arithmetic(node* node, RuntimeError** err) {
+interpreter_result_t interpret_arithmetic(node* node, RuntimeError** err) {
     // ADD R2, R4, #234
     // ADD R2, R4, R5
 
@@ -102,6 +102,30 @@ interpreter_result_t interpet_arithmetic(node* node, RuntimeError** err) {
 
 }
 
+interpreter_result_t interpret_memory(node* node, address_space_t* usr_space, RuntimeError** err) {
+    // LDR R2, 234
+    // STR R1, 234
+
+    node_mem* mem = (node_mem *)node->value;
+
+    if (*err) return FAILTURE;
+
+    if (node->type == NTYPE_LDR) {
+
+        // SEG FAULT
+
+        int a = address_space_get_ref(usr_space, mem->mem);
+        printlnf("Got contents of memref %d as %d", mem->mem, a);
+
+        set_new_reg_state(mem->reg, a, err);
+
+        return 0;
+
+    }
+
+
+}
+
 
 /**
  *  Start the interpreter
@@ -113,7 +137,7 @@ interpreter_result_t interpet_arithmetic(node* node, RuntimeError** err) {
  *      TokenStream* tok_stream     -   The TokenStream to interpret.
  * 
  */
-void start_interpreter(TokenStream* tok_stream, RuntimeError** err) {
+void start_interpreter(TokenStream* tok_stream, address_space_t* usr_space, address_space_t* node_space, RuntimeError** err) {
 
     // Parse the tok_stream to a nodearray.
     nodearray* nodes = parse(tok_stream, err);
@@ -128,7 +152,7 @@ void start_interpreter(TokenStream* tok_stream, RuntimeError** err) {
         // TESTING
 
 
-        
+        address_space_push(node_space, curr_node);
 
 
         // END TESTING
@@ -138,15 +162,17 @@ void start_interpreter(TokenStream* tok_stream, RuntimeError** err) {
                 return;
             case NTYPE_ADD:
             case NTYPE_SUB:
-                interpet_arithmetic(curr_node, err);
+                interpret_arithmetic(curr_node, err);
                 break;
+            case NTYPE_LDR:
+                interpret_memory(curr_node, usr_space, err);
         }
 
         ln_pos++;
 
         if (*err) return;
 
-        nodearray_dump(nodes);
+        //nodearray_dump(nodes);
         display_regs();
         
     }
