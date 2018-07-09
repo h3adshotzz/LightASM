@@ -70,7 +70,7 @@ int interpet_operand(node_op_type t, int value, RuntimeError** err) {
     }
 }
 
-interpreter_result_t interpet_arithmetic(node* node, RuntimeError** err) {
+interpreter_result_t interpret_arithmetic(node* node, RuntimeError** err) {
     // ADD R2, R4, #234
     // ADD R2, R4, R5
 
@@ -102,6 +102,39 @@ interpreter_result_t interpet_arithmetic(node* node, RuntimeError** err) {
 
 }
 
+interpreter_result_t interpret_memory(node* node, address_space_t* usr_space, RuntimeError** err) {
+    // LDR R2, 234
+    // STR R1, 234
+
+    node_mem* mem = (node_mem *)node->value;
+
+    if (*err) return FAILTURE;
+
+    if (node->type == NTYPE_LDR) {
+
+        int a = address_space_get_ref(usr_space, mem->mem);
+        if (*err) return FAILTURE;
+
+        printlnf("Got contents of memref %d as %d", mem->mem, a);
+        set_new_reg_state(mem->reg, a, err);
+        if (*err) return FAILTURE;
+
+    } else if (node->type == NTYPE_STR) {
+
+        int b = get_reg_state(mem->reg, err);
+        if (*err) return FAILTURE;
+
+        printlnf("Got reg state of R%d as %d. Setting memref %d", mem->reg, b, mem->mem);
+        address_space_set_ref(usr_space, mem->mem, b);
+        
+
+    }
+
+    return SUCCESS;
+
+
+}
+
 
 /**
  *  Start the interpreter
@@ -113,7 +146,7 @@ interpreter_result_t interpet_arithmetic(node* node, RuntimeError** err) {
  *      TokenStream* tok_stream     -   The TokenStream to interpret.
  * 
  */
-void start_interpreter(TokenStream* tok_stream, RuntimeError** err) {
+void start_interpreter(TokenStream* tok_stream, address_space_t* usr_space, address_space_t* node_space, RuntimeError** err) {
 
     // Parse the tok_stream to a nodearray.
     nodearray* nodes = parse(tok_stream, err);
@@ -125,20 +158,30 @@ void start_interpreter(TokenStream* tok_stream, RuntimeError** err) {
 
         node* curr_node = nodes->value[ln_pos];
 
+        // TESTING
+
+
+        address_space_push(node_space, curr_node);
+
+
+        // END TESTING
+
         switch(curr_node->type) {
             case NTYPE_HALT:
                 return;
             case NTYPE_ADD:
             case NTYPE_SUB:
-                interpet_arithmetic(curr_node, err);
+                interpret_arithmetic(curr_node, err);
                 break;
+            case NTYPE_LDR:
+                interpret_memory(curr_node, usr_space, err);
         }
 
         ln_pos++;
 
         if (*err) return;
 
-        nodearray_dump(nodes);
+        //nodearray_dump(nodes);
         display_regs();
         
     }

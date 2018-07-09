@@ -31,9 +31,20 @@ void testing() {
 
     warningf("This is experimental. Crashes are expected.");
     
-    address_space_t* test = malloc(sizeof(address_space_t));
-    test = address_space_new(10);
-    address_space_dump(test);
+    address_space_t* spc = malloc(sizeof(address_space_t));
+    spc = address_space_new(SPACE_TYPE_VAL);
+    _tst_spc_dump(spc);
+
+    address_space_push(spc, 22);
+    address_space_push(spc, 34);
+    address_space_push(spc, 12);
+    address_space_push(spc, 45);
+    address_space_push(spc, 234);
+    address_space_push(spc, 2);
+    address_space_push(spc, 44);
+
+
+    _tst_spc_dump(spc);
 
 }
 

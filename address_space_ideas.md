@@ -53,6 +53,4 @@ When a call to a function is made that want's to access user data, we also parse
 When a call, such as `BRANCH`, is made, we parse the appropriate address space and `ln_pos`. We then take the address given in the node, and set `ln_pos` to the position that the node at the given address is in the `nodearray`.
 
 ## Some Notes
-I may realise some flaws with this plan, I came up with it at 4 in the morning. They'll be fixed in due course. I'll push this plan to the repository and work on my changes in the memory-beta branch. 
-
-If you have any usggestions please make a pull request. 
+I may realise some flaws with this plan, I came up with it at 4 in the morning. They'll be fixed in due course. If you have any usggestions please make a pull request. 
