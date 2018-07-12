@@ -17,6 +17,13 @@
  * 
 */
 
+/**
+ * 
+ *  To save commenting space, When a RuntimeError or 
+ *      TokenError is used, it's stopping a crash.
+ * 
+ */
+
 #include "error.h"
 
 

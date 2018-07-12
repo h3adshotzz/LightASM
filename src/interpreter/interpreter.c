@@ -20,11 +20,22 @@
 #include "interpreter.h"
 
 /**
- *  BEGIN REGISTER PROTOTYPING
+ *  All 12 registers represented as integers.
  * 
  */
 static int register_state[REGISTER_COUNT] = {0,1,2,3,4,5,6,7,8,9,10,11};
 
+
+/**
+ *  Get the current step of a register.
+ * 
+ *  Returns:
+ *      int     -   Register State
+ * 
+ *  Params:
+ *      reg_t reg           -   The register we want 
+ * 
+ */
 int get_reg_state(reg_t reg, RuntimeError** err) {
     if (reg >= 0 && reg <= 11) {
         return register_state[reg];
@@ -34,6 +45,18 @@ int get_reg_state(reg_t reg, RuntimeError** err) {
     }
 }
 
+
+/**
+ *  Set the new state of a given register
+ * 
+ *  Returns:
+ *      void
+ * 
+ *  Params:
+ *      reg_t reg       -   Register to modify
+ *      int new_state   -   New state of the register
+ * 
+ */
 void set_new_reg_state(reg_t reg, int new_state, RuntimeError** err) {
     if (reg >= 0 && reg <= 11) {
         register_state[reg] = new_state;
@@ -42,12 +65,23 @@ void set_new_reg_state(reg_t reg, int new_state, RuntimeError** err) {
     }
 }
 
+
+/**
+ *  Reset all the registers to 0
+ * 
+ */
 void reset_regs() {
     for (int i = 0; i < REGISTER_COUNT; i++) {
         register_state[i] = 0;
     }
 }
 
+
+/**
+ *  Display the contents of all the registers in a
+ *      formatted way.
+ *
+ */
 void display_regs() {
 
     RuntimeError *err = NULL;
@@ -57,12 +91,20 @@ void display_regs() {
     }
 
 }
+
+
 /**
- *  End register prototyping
+ *  Interpret the operand.
+ * 
+ *  Returns:
+ *      int     -   Value of the operand
+ * 
+ *  Params:
+ *      node_op_type t      -   The node operand type
+ *      int value           -   Operand value
+ * 
  */
-
-
-int interpet_operand(node_op_type t, int value, RuntimeError** err) {
+int interpret_operand(node_op_type t, int value, RuntimeError** err) {
     if (t == NOP_LITERAL) {
         return value;
     } else {
@@ -70,6 +112,17 @@ int interpet_operand(node_op_type t, int value, RuntimeError** err) {
     }
 }
 
+
+/**
+ *  Interpret the arithmetic commands.
+ * 
+ *  Returns:
+ *      interpreter_result_t        -   The result of the interpretation
+ * 
+ *  Params:
+ *      node node   -   The node to interpret
+ * 
+ */
 interpreter_result_t interpret_arithmetic(node* node, RuntimeError** err) {
     // ADD R2, R4, #234
     // ADD R2, R4, R5
@@ -102,6 +155,18 @@ interpreter_result_t interpret_arithmetic(node* node, RuntimeError** err) {
 
 }
 
+
+/**
+ *  Interpret the memory commands.
+ * 
+ *  Returns:
+ *      interpreter_result_t        -   The result of the interpretation
+ * 
+ *  Params:
+ *      node node           -   The node to interpret
+ *      address_space_t     -   User data address space
+ * 
+ */
 interpreter_result_t interpret_memory(node* node, address_space_t* usr_space, RuntimeError** err) {
     // LDR R2, 234
     // STR R1, 234
@@ -132,7 +197,6 @@ interpreter_result_t interpret_memory(node* node, address_space_t* usr_space, Ru
 
     return SUCCESS;
 
-
 }
 
 
@@ -158,13 +222,7 @@ void start_interpreter(TokenStream* tok_stream, address_space_t* usr_space, addr
 
         node* curr_node = nodes->value[ln_pos];
 
-        // TESTING
-
-
         address_space_push(node_space, curr_node);
-
-
-        // END TESTING
 
         switch(curr_node->type) {
             case NTYPE_HALT:
@@ -174,6 +232,7 @@ void start_interpreter(TokenStream* tok_stream, address_space_t* usr_space, addr
                 interpret_arithmetic(curr_node, err);
                 break;
             case NTYPE_LDR:
+            case NTYPE_STR:
                 interpret_memory(curr_node, usr_space, err);
         }
 
@@ -187,7 +246,5 @@ void start_interpreter(TokenStream* tok_stream, address_space_t* usr_space, addr
     }
 
     *err = throw_runtime_error("Unexpected end of nodes");
-
-
 
 }
