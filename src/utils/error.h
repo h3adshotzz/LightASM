@@ -41,6 +41,8 @@ typedef struct {
     char* msg;
 } RuntimeError;
 
+#define error_thrown(err) if (*err) return;
+
 
 // Error Functions
 void tkn_error_print(TokenError* e);
