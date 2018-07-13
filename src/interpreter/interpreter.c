@@ -40,7 +40,7 @@ int get_reg_state(reg_t reg, RuntimeError** err) {
     if (reg >= 0 && reg <= 11) {
         return register_state[reg];
     } else {
-        *err = throw_runtime_error("Bad Register");
+        *err = throw_error("Bad Register");
         return 0;
     }
 }
@@ -61,7 +61,7 @@ void set_new_reg_state(reg_t reg, int new_state, RuntimeError** err) {
     if (reg >= 0 && reg <= 11) {
         register_state[reg] = new_state;
     } else {
-        *err = throw_runtime_error("Bad Register");
+        *err = throw_error("Bad Register");
     }
 }
 
@@ -87,7 +87,7 @@ void display_regs() {
     RuntimeError *err = NULL;
     for (int i = 0; i < REGISTER_COUNT; i++) {
         printf("R%d: %d\n", i, get_reg_state(i, &err));
-        if (err) rt_error_print(err);
+        if (err) error_print(err);
     }
 
 }
@@ -192,7 +192,7 @@ interpreter_result_t interpret_memory(node* node, address_space_t* usr_space, Ru
         printlnf("Got reg state of R%d as %d. Setting memref %d", mem->reg, b, mem->mem);
         address_space_set_ref(usr_space, mem->mem, b);
 
-    } else if (node->type == NTYPE_MOV) {
+    } else if (node->type == NTYPE_MOV || node->type == NTYPE_MVN) {
 
         node_op* op = (node_op *)node->value;
         if (*err) return FAILTURE;
@@ -204,15 +204,23 @@ interpreter_result_t interpret_memory(node* node, address_space_t* usr_space, Ru
             int ns = get_reg_state(op->value, err);
             if (*err) return FAILTURE;
 
-            set_new_reg_state(op->dest, ns, err);
-            if (*err) return FAILTURE;
+            if (node->type == NTYPE_MOV) {
+                set_new_reg_state(op->dest, ns, err);
+                if (*err) return FAILTURE;
+            } else {
+                set_new_reg_state(op->dest, !ns, err);
+                if (*err) return FAILTURE;
+            }
 
         } else {
 
-            debugf("Dest: %d\nValue: %d", op->dest, op->value);
-
-            set_new_reg_state(op->dest, op->value, err);
-            if (*err) return FAILTURE;
+            if (node->type == NTYPE_MOV) {
+                set_new_reg_state(op->dest, op->value, err);
+                if (*err) return FAILTURE;
+            } else {
+                set_new_reg_state(op->dest, !op->value, err);
+                if (*err) return FAILTURE;
+            }
 
         }
 
@@ -220,6 +228,61 @@ interpreter_result_t interpret_memory(node* node, address_space_t* usr_space, Ru
 
     return SUCCESS;
 
+}
+
+
+/**
+ *  Start the interpreter
+ * 
+ *  Returns:
+ *      void
+ * 
+ *  Params:
+ *      TokenStream* tok_stream     -   The TokenStream to interpret.
+ * 
+ */
+interpreter_result_t interpret_bitwise(node* node, RuntimeError** err) {
+
+    /**
+     *  AND     &
+     *  ORR     |
+     *  EOR     ^
+     *  LSL     <<
+     *  LSR     >>
+     */
+
+    node_op_on *opon = (node_op_on *)node->value;
+
+    int a = get_reg_state(opon->source, err);
+    error_thrown(err, FAILTURE);
+
+    int b = 0;
+
+    if (opon->type == NOP_LITERAL) {
+        b = opon->value;
+    } else {
+        b = get_reg_state(opon->value, err);
+        error_thrown(err, FAILTURE);
+    } 
+
+    int result = 0;
+
+    if (node->type == NTYPE_AND) {
+        result = a & b;
+    } else if (node->type == NTYPE_ORR) {
+        result = a | b;
+    } else if (node->type == NTYPE_EOR) {
+        result = a ^ b;
+    } else if (node->type == NTYPE_LSL) {
+        result = a << b;
+    } else if (node->type == NTYPE_LSR) {
+        result = a >> b;
+    }
+
+    set_new_reg_state(opon->dest, result, err);
+    error_thrown(err, FAILTURE);
+
+    return SUCCESS;
 }
 
 
@@ -257,7 +320,16 @@ void start_interpreter(TokenStream* tok_stream, address_space_t* usr_space, addr
             case NTYPE_LDR:
             case NTYPE_STR:
             case NTYPE_MOV:
+            case NTYPE_MVN:
                 interpret_memory(curr_node, usr_space, err);
+                break;
+            case NTYPE_AND:
+            case NTYPE_ORR:
+            case NTYPE_EOR:
+            case NTYPE_LSL:
+            case NTYPE_LSR:
+                interpret_bitwise(curr_node, err);
+                break;
         }
 
         ln_pos++;
@@ -269,6 +341,6 @@ void start_interpreter(TokenStream* tok_stream, address_space_t* usr_space, addr
         
     }
 
-    *err = throw_runtime_error("Unexpected end of nodes");
+    *err = throw_error("Unexpected end of nodes");
 
 }

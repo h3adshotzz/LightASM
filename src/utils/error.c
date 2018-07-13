@@ -20,7 +20,7 @@
 /**
  * 
  *  To save commenting space, When a RuntimeError or 
- *      TokenError is used, it's stopping a crash.
+ *      Error is used, it's stopping a crash.
  * 
  */
 
@@ -28,72 +28,36 @@
 
 
 /**
- *  Throw the TokenError
+ *  Throw the Error
  * 
  *  Returns:
- *      TokenError      -   The TokenError thrown
+ *      Error      -   The Error thrown
  * 
  *  Params:
  *      char* msg       -   The message to throw with the error
  */
-TokenError* throw_token_error(char* msg) {
+Error* throw_error(char* msg) {
 
-    // Create the TokenError and allocate memory, set the message
-    TokenError* tknerr = malloc(sizeof(TokenError));
+    // Create the Error and allocate memory, set the message
+    Error* tknerr = malloc(sizeof(Error));
     tknerr->msg = msg;
 
-    // Return the TokenError.
+    // Return the Error.
     return tknerr;
 
 } 
 
 
 /** 
- *  Print the TokenError
+ *  Print the Error
  * 
  *  Returns:
  *      void
  * 
  *  Params:
- *      TokenError* e       -   The TokenError to the print.
+ *      Error* e       -   The Error to the print.
  */
-void tkn_error_print(TokenError* e) {
-    // Print an error with the msg.
-    errorf("Thrown: %s", e->msg);
-}
-
-
-/**
- *  Throw the RuntimeError
- * 
- *  Returns:
- *      RuntimeError      -   The RuntimeError thrown
- * 
- *  Params:
- *      char* msg       -   The message to throw with the error
- */
-RuntimeError* throw_runtime_error(char* msg) {
-
-    // Create the RuntimeError and allocate memory, set the message
-    RuntimeError* rterr = malloc(sizeof(RuntimeError));
-    rterr->msg = msg;
-
-    // Return the RuntimeError.
-    return rterr;
-
-} 
-
-
-/** 
- *  Print the RuntimeError
- * 
- *  Returns:
- *      void
- * 
- *  Params:
- *      RuntimeError* e       -   The RuntimeError to the print.
- */
-void rt_error_print(RuntimeError* e) {
+void error_print(Error* e) {
     // Print an error with the msg.
     errorf("Thrown: %s", e->msg);
 }

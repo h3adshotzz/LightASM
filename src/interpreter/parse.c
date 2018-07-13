@@ -29,10 +29,10 @@
  * 
  *  Params:
  *      TokenStream     -   The Token Stream to verify
- *      TokenError      -   The Token Error currently use.
+ *      Error      -   The Token Error currently use.
  * 
  */
-int is_comma(TokenStream* tmp, TokenError** err) {
+int is_comma(TokenStream* tmp, Error** err) {
     Token* tmp2 = token_stream_next(tmp, err);
     if (!tmp2) return 0;
     if (tmp2->type == TOK_COMMA) {
@@ -51,16 +51,16 @@ int is_comma(TokenStream* tmp, TokenError** err) {
  *  
  *  Params:
  *      TokenStream     -   The Token Stream to verify
- *      TokenError      -   The Token Error currently in use
+ *      Error      -   The Token Error currently in use
  * 
  */
-int get_memref(TokenStream* tmp, TokenError** err) {
+int get_memref(TokenStream* tmp, Error** err) {
     Token* tmp2 = token_stream_next(tmp, err);
     if (!tmp2) return 0;
     if (tmp2->type == TOK_MEMORY) {
         return atoi(tmp2->val);
     }
-    *err = throw_token_error("Token not of type TOK_MEMORY");
+    *err = throw_error("Token not of type TOK_MEMORY");
     return 0;
 }
 
@@ -74,16 +74,16 @@ int get_memref(TokenStream* tmp, TokenError** err) {
  *  
  *  Params:
  *      TokenStream - tmp       -   The Token Stream to verify
- *      TokenError - err        -   The Token Error currently in use
+ *      Error - err        -   The Token Error currently in use
  * 
  */
-int get_register(TokenStream* tmp, TokenError** err) {
+int get_register(TokenStream* tmp, Error** err) {
     Token* tmp2 = token_stream_next(tmp, err);
     if (!tmp2) return 0;
     if (tmp2->type == TOK_REGISTER) {
         return atoi(tmp2->val);
     }
-    *err = throw_token_error("Token not a of type TOK_REGISTER");
+    *err = throw_error("Token not a of type TOK_REGISTER");
     return 0;
 }
 
@@ -100,10 +100,10 @@ int get_register(TokenStream* tmp, TokenError** err) {
  *  Params:
  *      TokenStream - token_stream          -   The Token Stream currently being used
  *      Token - tmp                         -   A temp Token to store the current TokenStream.
- *      TokenError - err                    -   The Token Error currently in use.
+ *      Error - err                    -   The Token Error currently in use.
  * 
  */
-node* parse_ldr(TokenStream* token_stream, Token* tmp, TokenError** err) {
+node* parse_ldr(TokenStream* token_stream, Token* tmp, Error** err) {
     
     // Create a new node, set the type and then create a node_mem
     node* node = malloc(sizeof(node));
@@ -141,10 +141,10 @@ node* parse_ldr(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *  Params:
  *      TokenStream - token_stream          -   The Token Stream currently being used
  *      Token - tmp                         -   A temp Token to store the current TokenStream.
- *      TokenError - err                    -   The Token Error currently in use.
+ *      Error - err                    -   The Token Error currently in use.
  * 
  */
-node* parse_str(TokenStream* token_stream, Token* tmp, TokenError** err) {
+node* parse_str(TokenStream* token_stream, Token* tmp, Error** err) {
 
     // Create a new node, set the type and then createa a node_mem
     node* node = malloc(sizeof(node));
@@ -182,10 +182,10 @@ node* parse_str(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *  Params:
  *      TokenStream - token_stream          -   The Token Stream currently being used
  *      Token - tmp                         -   A temp Token to store the current TokenStream.
- *      TokenError - err                    -   The Token Error currently in use.
+ *      Error - err                    -   The Token Error currently in use.
  * 
  */
-node* parse_mov(TokenStream* token_stream, Token* tmp, TokenError** err) {
+node* parse_mov(TokenStream* token_stream, Token* tmp, Error** err) {
     
     // Create a new node, set the type and then create a node_op
     node *node = malloc(sizeof(node));
@@ -215,7 +215,7 @@ node* parse_mov(TokenStream* token_stream, Token* tmp, TokenError** err) {
     } else {
 
         // There was an issue, throw a token error with a message.
-        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        *err = throw_error("Token not of type TOK_REGISTER or TOK_NUMBER");
         return NULL;
     }
 
@@ -239,10 +239,10 @@ node* parse_mov(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *  Params:
  *      TokenStream - token_stream          -   The Token Stream currently being used
  *      Token - tmp                         -   A temp Token to store the current TokenStream.
- *      TokenError - err                    -   The Token Error currently in use.
+ *      Error - err                    -   The Token Error currently in use.
  * 
  */
-node* parse_cmp(TokenStream* token_stream, Token* tmp, TokenError** err) {
+node* parse_cmp(TokenStream* token_stream, Token* tmp, Error** err) {
 
     // Create a new node, set the type and then create a node_op
     node *node = malloc(sizeof(node));
@@ -272,7 +272,7 @@ node* parse_cmp(TokenStream* token_stream, Token* tmp, TokenError** err) {
     } else {
 
         // There was an issue, throw a token error with a message.
-        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        *err = throw_error("Token not of type TOK_REGISTER or TOK_NUMBER");
         return NULL;
     }
 
@@ -297,10 +297,10 @@ node* parse_cmp(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *  Params:
  *      TokenStream - token_stream          -   The Token Stream currently being used
  *      Token - tmp                         -   A temp Token to store the current TokenStream.
- *      TokenError - err                    -   The Token Error currently in use.
+ *      Error - err                    -   The Token Error currently in use.
  * 
  */
-node* parse_add(TokenStream* token_stream, Token* tmp, TokenError** err) {
+node* parse_add(TokenStream* token_stream, Token* tmp, Error** err) {
 
     // Create a new node, set the type and then create a node_op_on
     node* node = malloc(sizeof(node));
@@ -339,7 +339,7 @@ node* parse_add(TokenStream* token_stream, Token* tmp, TokenError** err) {
     } else {
 
         // There was an issue, throw a token error with a message.
-        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        *err = throw_error("Token not of type TOK_REGISTER or TOK_NUMBER");
         return NULL;
     }
 
@@ -364,10 +364,10 @@ node* parse_add(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *  Params:
  *      TokenStream - token_stream          -   The Token Stream currently being used
  *      Token - tmp                         -   A temp Token to store the current TokenStream.
- *      TokenError - err                    -   The Token Error currently in use.
+ *      Error - err                    -   The Token Error currently in use.
  * 
  */
-node* parse_sub(TokenStream* token_stream, Token* tmp, TokenError** err) {
+node* parse_sub(TokenStream* token_stream, Token* tmp, Error** err) {
 
     // Create a new node, set the type and then create a node_op_on
     node* node = malloc(sizeof(node));
@@ -406,7 +406,7 @@ node* parse_sub(TokenStream* token_stream, Token* tmp, TokenError** err) {
     } else {
 
         // There was an issue, throw a token error with a message.
-        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        *err = throw_error("Token not of type TOK_REGISTER or TOK_NUMBER");
         return NULL;
     }
 
@@ -431,10 +431,10 @@ node* parse_sub(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *  Params:
  *      TokenStream - token_stream          -   The Token Stream currently being used
  *      Token - tmp                         -   A temp Token to store the current TokenStream.
- *      TokenError - err                    -   The Token Error currently in use.
+ *      Error - err                    -   The Token Error currently in use.
  * 
  */
-node* parse_and(TokenStream* token_stream, Token* tmp, TokenError** err) {
+node* parse_and(TokenStream* token_stream, Token* tmp, Error** err) {
 
     // Create a new node, set the type and then create a node_op_on
     node* node = malloc(sizeof(node));
@@ -473,7 +473,7 @@ node* parse_and(TokenStream* token_stream, Token* tmp, TokenError** err) {
     } else {
 
         // There was an issue, throw a token error with a message.
-        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        *err = throw_error("Token not of type TOK_REGISTER or TOK_NUMBER");
         return NULL;
     }
 
@@ -498,10 +498,10 @@ node* parse_and(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *  Params:
  *      TokenStream - token_stream          -   The Token Stream currently being used
  *      Token - tmp                         -   A temp Token to store the current TokenStream.
- *      TokenError - err                    -   The Token Error currently in use.
+ *      Error - err                    -   The Token Error currently in use.
  * 
  */
-node* parse_orr(TokenStream* token_stream, Token* tmp, TokenError** err) {
+node* parse_orr(TokenStream* token_stream, Token* tmp, Error** err) {
 
     // Create a new node, set the type and then create a node_op_on
     node* node = malloc(sizeof(node));
@@ -540,7 +540,7 @@ node* parse_orr(TokenStream* token_stream, Token* tmp, TokenError** err) {
     } else {
 
         // There was an issue, throw a token error with a message.
-        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        *err = throw_error("Token not of type TOK_REGISTER or TOK_NUMBER");
         return NULL;
     }
 
@@ -565,10 +565,10 @@ node* parse_orr(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *  Params:
  *      TokenStream - token_stream          -   The Token Stream currently being used
  *      Token - tmp                         -   A temp Token to store the current TokenStream.
- *      TokenError - err                    -   The Token Error currently in use.
+ *      Error - err                    -   The Token Error currently in use.
  * 
  */
-node* parse_eor(TokenStream* token_stream, Token* tmp, TokenError** err) {
+node* parse_eor(TokenStream* token_stream, Token* tmp, Error** err) {
 
     // Create a new node, set the type and then create a node_op_on
     node* node = malloc(sizeof(node));
@@ -607,7 +607,7 @@ node* parse_eor(TokenStream* token_stream, Token* tmp, TokenError** err) {
     } else {
 
         // There was an issue, throw a token error with a message.
-        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        *err = throw_error("Token not of type TOK_REGISTER or TOK_NUMBER");
         return NULL;
     }
 
@@ -632,10 +632,10 @@ node* parse_eor(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *  Params:
  *      TokenStream - token_stream          -   The Token Stream currently being used
  *      Token - tmp                         -   A temp Token to store the current TokenStream.
- *      TokenError - err                    -   The Token Error currently in use.
+ *      Error - err                    -   The Token Error currently in use.
  * 
  */
-node* parse_mvn(TokenStream* token_stream, Token* tmp, TokenError** err) {
+node* parse_mvn(TokenStream* token_stream, Token* tmp, Error** err) {
     
     // Create a new node, set the type and then create a node_op
     node *node = malloc(sizeof(node));
@@ -665,7 +665,7 @@ node* parse_mvn(TokenStream* token_stream, Token* tmp, TokenError** err) {
     } else {
 
         // There was an issue, throw a token error with a message.
-        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        *err = throw_error("Token not of type TOK_REGISTER or TOK_NUMBER");
         return NULL;
     }
 
@@ -690,10 +690,10 @@ node* parse_mvn(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *  Params:
  *      TokenStream - token_stream          -   The Token Stream currently being used
  *      Token - tmp                         -   A temp Token to store the current TokenStream.
- *      TokenError - err                    -   The Token Error currently in use.
+ *      Error - err                    -   The Token Error currently in use.
  * 
  */
-node* parse_lsl(TokenStream* token_stream, Token* tmp, TokenError** err) {
+node* parse_lsl(TokenStream* token_stream, Token* tmp, Error** err) {
 
     // Create a new node, set the type and then create a node_op_on
     node* node = malloc(sizeof(node));
@@ -732,7 +732,7 @@ node* parse_lsl(TokenStream* token_stream, Token* tmp, TokenError** err) {
     } else {
 
         // There was an issue, throw a token error with a message.
-        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        *err = throw_error("Token not of type TOK_REGISTER or TOK_NUMBER");
         return NULL;
     }
 
@@ -757,10 +757,10 @@ node* parse_lsl(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *  Params:
  *      TokenStream - token_stream          -   The Token Stream currently being used
  *      Token - tmp                         -   A temp Token to store the current TokenStream.
- *      TokenError - err                    -   The Token Error currently in use.
+ *      Error - err                    -   The Token Error currently in use.
  * 
  */
-node* parse_lsr(TokenStream* token_stream, Token* tmp, TokenError** err) {
+node* parse_lsr(TokenStream* token_stream, Token* tmp, Error** err) {
 
     // Create a new node, set the type and then create a node_op_on
     node* node = malloc(sizeof(node));
@@ -799,7 +799,7 @@ node* parse_lsr(TokenStream* token_stream, Token* tmp, TokenError** err) {
     } else {
 
         // There was an issue, throw a token error with a message.
-        *err = throw_token_error("Token not of type TOK_REGISTER or TOK_NUMBER");
+        *err = throw_error("Token not of type TOK_REGISTER or TOK_NUMBER");
         return NULL;
     }
 
@@ -822,10 +822,10 @@ node* parse_lsr(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *  Params:
  *      TokenStream - token_stream          -   The Token Stream currently being used
  *      Token - tmp                         -   A temp Token to store the current TokenStream.
- *      TokenError - err                    -   The Token Error currently in use.
+ *      Error - err                    -   The Token Error currently in use.
  * 
  */
-node* parse_halt(TokenStream* token_stream, Token* tmp, TokenError** err) {
+node* parse_halt(TokenStream* token_stream, Token* tmp, Error** err) {
 
     node* node = malloc(sizeof(node));
     node->type = NTYPE_HALT;
@@ -845,7 +845,7 @@ node* parse_halt(TokenStream* token_stream, Token* tmp, TokenError** err) {
  *      TokenStream - token_stream         -    The Token Stream to be parsed to a nodearray
  * 
  */
-nodearray* parse(TokenStream* token_stream, TokenError** err) {
+nodearray* parse(TokenStream* token_stream, Error** err) {
 
     // Create the node array that we are going to return
     nodearray* rt = nodearray_new();
@@ -913,7 +913,7 @@ nodearray* parse(TokenStream* token_stream, TokenError** err) {
                 nodearray_push(rt, parse_halt(token_stream, tmp, err));
             }
         } else {
-            *err = throw_token_error("Unexpected node");
+            *err = throw_error("Unexpected node");
         }
 
         // If the error is set to something, assume hell has broken loose.

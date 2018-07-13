@@ -70,7 +70,7 @@ void console_run() {
             start_interpreter(tok_stream, usr_data_space, node_data_space, &err);
 
             if (err) {
-                rt_error_print(err);
+                error_print(err);
             }
         }
 

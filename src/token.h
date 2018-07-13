@@ -84,7 +84,7 @@ void token_dump (Token* self);
 
 // TokenStream functions.
 TokenStream* token_stream_new(char* input);
-Token* token_stream_next(TokenStream* tknstr, TokenError** err);
+Token* token_stream_next(TokenStream* tknstr, Error** err);
 int token_stream_eof(TokenStream* tok);
 
 #endif

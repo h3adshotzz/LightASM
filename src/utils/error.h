@@ -23,13 +23,13 @@
 #include "log.h"
 
 /**
- *  The TokenError struct
+ *  The Error struct
  * 
  *  char* msg   -   The message to throw
  */
 typedef struct {
     char* msg;
-} TokenError;
+} Error;
 
 
 /**
@@ -41,14 +41,11 @@ typedef struct {
     char* msg;
 } RuntimeError;
 
-#define error_thrown(err) if (*err) return;
+#define error_thrown(err, v) if (*err) return v;
 
 
 // Error Functions
-void tkn_error_print(TokenError* e);
-TokenError* throw_token_error(char* msg);
-
-void rt_error_print(RuntimeError* e);
-RuntimeError* throw_runtime_error(char* msg);
+void error_print(Error* e);
+Error* throw_error(char* msg);
 
 #endif

@@ -121,10 +121,10 @@ static char* read_string(TokenStream* stream, int (*reader)(int)) {
  * 
  *  Params:
  *      TokenStream - tknstr        -   The TokenStream to get the next position from.
- *      TokenError - err            -   The TokenError which is being used.
+ *      Error - err            -   The Error which is being used.
  * 
  */
-Token* token_stream_next(TokenStream* tknstr, TokenError** err) {
+Token* token_stream_next(TokenStream* tknstr, Error** err) {
 
     // Skip spaces, tabs & newlines ext
     read_string(tknstr, &isspace);
@@ -176,7 +176,7 @@ Token* token_stream_next(TokenStream* tknstr, TokenError** err) {
     } else {
 
         // Something happend so we throw an error.
-        *err = throw_token_error("Invalid input");
+        *err = throw_error("Invalid input");
         return NULL;
     }
 }
