@@ -41,6 +41,13 @@ void console_run() {
      */
     char *curline = malloc(14);  
 
+    // Testing
+    address_space_t* usr_data_space = malloc(sizeof(address_space_t));
+    address_space_t* node_data_space = malloc(sizeof(address_space_t));
+
+    node_data_space = address_space_new(SPACE_TYPE_NODE);
+    usr_data_space = address_space_new(SPACE_TYPE_VAL);
+
     while(repeat) {
 
         // Get input
@@ -60,12 +67,15 @@ void console_run() {
             TokenStream* tok_stream = token_stream_new(curline);
             
             RuntimeError* err = NULL;
-            start_interpreter(tok_stream, &err);
+            start_interpreter(tok_stream, usr_data_space, node_data_space, &err);
 
             if (err) {
                 rt_error_print(err);
             }
         }
+
+        _tst_spc_dump(usr_data_space);
+        //_tst_spc_dump(node_data_space);
     }
 
 }

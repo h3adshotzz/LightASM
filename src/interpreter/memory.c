@@ -17,206 +17,126 @@
  * 
 */
 
-/*
-
-    Memory layout/idea
-
-    |-----|-------
-    |  0  |  Memory pos 0
-    |  1  |  Memory pos 1
-    |  2  |  Memory pos 2
-    | ... |  The rest of memory
-    | 128 |  Memory pos 128
-    | 129 |  The first node in the nodearray
-    | ... |  The rest of the nodes
-    |-----|------
-
-    Details:
-
-        - The user is given 128 bytes for their program which can be modified
-        - After pos 128, the memory address are used to reference nodes.
-        - The nodearray struct will have a base_address attribute.  
-
-        typedef struct nodearray {
-            node **value;
-            int elements;
-            int allocated;
-            int base_address;
-        } nodearray;
-
-        The base address is retrieved from memory.c, where the address will be given
-        depending on where data ends in the address space.
-
-        To work out the addres of a instruction, You add the position of the node
-        in the array onto the base address.
-
-
-    This is kind of a mess at the moment, as of 29th june 2018 at 2:54 GMT.
-    ... i might fix it and forget to remove this message, idk
-
-*/
-
 #include "memory.h"
 
-void address_page_dump(address_page_t* page) {
-
-    /*
-        EXEC_BAD_ACCESS occurs here.
-    */
-    if (page->type != NULL) {
-        page_type type = page->type;
+void _tst_pge_dump(void* pge, space_type type, int memref) {
+    if (type != NULL) {
 
         switch (type) {
-            case PAGE_TYPE_NODE:
-                printlnf("Page Type:                    PAGE_TYPE_NODE");
-
-                node *nde = malloc(sizeof(node));
-                nde = (node *) page->value;
-                node_dump(nde);
+            case SPACE_TYPE_VAL:
+                printlnf("Memory Ref:                   %d", memref);
+                printlnf("Value:                        %d", (int) pge);
+                printlnf("--------------------------------------");
                 break;
-
-            case PAGE_TYPE_VAL:
-                printlnf("Page Type:                    PAGE_TYPE_VAL");
-                printlnf("Value:                        %d", (int) page->value);
+            
+            case SPACE_TYPE_NODE:
                 break;
 
             default:
-                errorf("Unknown page type. Aborting!");
-                exit(1);
+                break;
         }
-    } else {
-        errorf("Page Type is NULL. Aborting!");
+
     }
 }
 
-void address_space_dump(address_space_t* spc) {
-
+void _tst_spc_dump(address_space_t* spc) {
     // Debugging message
     debugf("Dumping address_space...");
 
     // Print array information
     printlnf("=== ADDRESS SPACE DUMP ===");
+    if (spc->type == SPACE_TYPE_VAL) {
+        printlnf("Type:                 SPACE_TYPE_VAL");
+    } else if (spc->type == SPACE_TYPE_NODE) {
+        printlnf("Type:                 SPACE_TYPE_NODE");
+    } else {
+        printlnf("Type:                 UNKNOWN");
+        printlnf("Elements:             %d", spc->elements);
+        printlnf("Allocated:            %d", spc->allocated);
+        printlnf("");
+
+        errorf("Error, Type is unknown. Aborting....");
+        exit(1);
+    }
     printlnf("Elements:             %d", spc->elements);
     printlnf("Allocated:            %d", spc->allocated);
     printlnf("");
 
-    if (spc->pages == NULL) {
-        errorf("Pages are NULL. Aborting");
-        exit(1);
-    } else {
-        printlnf("Pages Size:            %d", sizeof(spc->pages));
-        printlnf("");
-        for (int i = 0; i < spc->allocated; i++) {
-            address_page_dump(spc->pages[i]);
-        }
+    for (int i = 0; i < spc->elements; i++) {
+        _tst_pge_dump(spc->pages[i], spc->type, i);
     }
 }
 
-int address_space_push(address_page_t* page, address_space_t* addr) {
-    
-    /*
+/**
+ * 
+ *  NOTES:
+ * 
+ *  - The address space manipulation functions need to be able to 
+ *      work with both int and nodes. Fix this. 
+ * 
+ */
 
-        Basically, this should do the following
+void address_space_set_ref(address_space_t* spc, int ref, int value) {
+    spc->pages[ref] = value;
+}
 
-        - if type is a val, add at a free position under 128
-
-        - if type is a node, add at a free posiiton under the cap, and over 128
-
-    */
-
-    if (addr->allocated == addr->elements) {
-
-        if (addr->allocated == 0) {
-            addr->allocated = 130;      // 128 + 2 extra
-        } else {
-            addr->allocated += 2;
-        }
-
-        void *tmp = realloc(addr->pages, (addr->allocated * sizeof(address_page_t)));
-
-        if (!tmp) errorf("Could not allocated memory. Aborting!");
-
-        addr->pages = (address_page_t**) tmp;
-
-        if (page->type == PAGE_TYPE_VAL) {
-            for (int i = 0; i < 127; i++) {
-                if (addr->pages[i] == NULL) {
-                    addr->pages[i] = page;
-                    i = 127;
-                }
-            }
-        } else if (page->type == PAGE_TYPE_NODE) {
-            if (addr->elements < 127) {
-                addr->elements = (127 - addr->elements) + 1;
-                addr->pages[addr->elements] = page;
-            } else {
-                addr->pages[addr->elements] = page;
-            }
-        }
-
-        return addr->elements;
-    }
-
-/*
-
-    if (!addr->allocated) {
+int address_space_get_ref(address_space_t* spc, int ref) {
+    int tmp = (int) spc->pages[ref];
+    if (tmp != NULL) {
+        return tmp;
+    } else {
         return 0;
-    } else {
-        void* tmp = realloc(addr->pages, addr->allocated * sizeof(address_page_t));
+    }
+}
 
-        if (!tmp) {
-            errorf("Could not allocated memory. Aborting!");
+int address_space_push(address_space_t* spc, void* elm) {
+
+    if (spc->type == SPACE_TYPE_VAL) {
+
+        debugf("Pushing a space_type of SPACE_TYPE_VAL, %d, onto the address space...", elm);
+
+        if (spc->allocated <= spc->elements) {
+            // Throw an error, out of user memroy.
         }
 
-        addr->pages = (address_page_t **) tmp;
+        spc->pages[spc->elements] = elm;
+        spc->elements++;
 
-        if (page->type == PAGE_TYPE_NODE) {
-            if (addr->elements > 128) {
-                addr->pages[addr->elements] = page;
-            } else {
-                addr->pages[128] = page;
-            }
-        } else {
-            for (int i = 0; i < 128; i++) {
-                if (addr->pages[i] == NULL) {
-                    addr->pages[i] = page;
-                } 
-            }
-        }
+        return 1;
 
-        addr->elements++;
-
-        return addr->elements;
-    }*/
+    }
 
 }
 
-address_space_t* address_space_new() {
+address_space_t* address_space_new(space_type type) {
 
-    // Create a new address space
-    address_space_t *rt = malloc(sizeof(address_space_t));
+    address_space_t* rt = malloc(sizeof(address_space_t));
 
-    rt->allocated = 128 + 1;        // We allocated 128 pages and 1 for a node
-    rt->elements = 128;                 // We have 128 that are already filled. 
-    rt->pages = NULL;
+    if (type == SPACE_TYPE_VAL) {
 
-    // Cycle through (hopefully) 128 times 
-    for (int i = 0; i < 127; i++) {
+        rt->type = SPACE_TYPE_VAL;
+        rt->allocated = 128;        // We allocated 128 for the user data.
+        rt->elements = 5;           // There currently isn't anything in it. 
 
-        // Create a new page
-        address_page_t *pg = malloc(sizeof(address_page_t));
+        rt->pages = malloc(sizeof(int) * rt->allocated);    // Allocate enough memory. 
 
-        // Set the type to PAGE_TYPE_VAL and the default value to 0
-        pg->type = PAGE_TYPE_VAL;
-        pg->value = 0;
+        // This is just for testing purposes.
+        rt->pages[0] = 12;
+        rt->pages[1] = 13;
+        rt->pages[2] = 14;
+        rt->pages[3] = 15;
 
-        address_page_dump(pg);
+        return rt;
 
-        // Push the page onto the address space
-        address_space_push(pg, rt);
-    
-    }
+    } else if (type == SPACE_TYPE_NODE) {
 
-    // Return the address space
-    return rt;
+        rt->type = SPACE_TYPE_NODE;
+        rt->allocated = 10;;        // We allocate 10 for the commands.
+        rt->elements = 0;           // There currently isn't anything in it.
+
+        rt->pages = malloc(sizeof(node) * rt->allocated);
+
+        return rt;
+
+    } 
 }
