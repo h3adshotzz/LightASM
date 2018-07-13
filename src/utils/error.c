@@ -19,7 +19,7 @@
 
 /**
  * 
- *  To save commenting space, When a RuntimeError or 
+ *  To save commenting space, When a Error or 
  *      Error is used, it's stopping a crash.
  * 
  */

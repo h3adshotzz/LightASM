@@ -32,16 +32,8 @@ typedef struct {
 } Error;
 
 
-/**
- *  The RuntimeError struct
- * 
- *  char* msg   -   The message to throw
- */
-typedef struct {
-    char* msg;
-} RuntimeError;
-
 #define error_thrown(err, v) if (*err) return v;
+#define error_thrown_v(err) if (*err) return;
 
 
 // Error Functions

@@ -36,7 +36,7 @@ static int register_state[REGISTER_COUNT] = {0,1,2,3,4,5,6,7,8,9,10,11};
  *      reg_t reg           -   The register we want 
  * 
  */
-int get_reg_state(reg_t reg, RuntimeError** err) {
+int get_reg_state(reg_t reg, Error** err) {
     if (reg >= 0 && reg <= 11) {
         return register_state[reg];
     } else {
@@ -57,7 +57,7 @@ int get_reg_state(reg_t reg, RuntimeError** err) {
  *      int new_state   -   New state of the register
  * 
  */
-void set_new_reg_state(reg_t reg, int new_state, RuntimeError** err) {
+void set_new_reg_state(reg_t reg, int new_state, Error** err) {
     if (reg >= 0 && reg <= 11) {
         register_state[reg] = new_state;
     } else {
@@ -84,7 +84,7 @@ void reset_regs() {
  */
 void display_regs() {
 
-    RuntimeError *err = NULL;
+    Error *err = NULL;
     for (int i = 0; i < REGISTER_COUNT; i++) {
         printf("R%d: %d\n", i, get_reg_state(i, &err));
         if (err) error_print(err);
@@ -104,7 +104,7 @@ void display_regs() {
  *      int value           -   Operand value
  * 
  */
-int interpret_operand(node_op_type t, int value, RuntimeError** err) {
+int interpret_operand(node_op_type t, int value, Error** err) {
     if (t == NOP_LITERAL) {
         return value;
     } else {
@@ -123,7 +123,7 @@ int interpret_operand(node_op_type t, int value, RuntimeError** err) {
  *      node node   -   The node to interpret
  * 
  */
-interpreter_result_t interpret_arithmetic(node* node, RuntimeError** err) {
+interpreter_result_t interpret_arithmetic(node* node, Error** err) {
     // ADD R2, R4, #234
     // ADD R2, R4, R5
 
@@ -167,7 +167,7 @@ interpreter_result_t interpret_arithmetic(node* node, RuntimeError** err) {
  *      address_space_t     -   User data address space
  * 
  */
-interpreter_result_t interpret_memory(node* node, address_space_t* usr_space, RuntimeError** err) {
+interpreter_result_t interpret_memory(node* node, address_space_t* usr_space, Error** err) {
     // LDR R2, 234
     // STR R1, 234
 
@@ -241,7 +241,7 @@ interpreter_result_t interpret_memory(node* node, address_space_t* usr_space, Ru
  *      TokenStream* tok_stream     -   The TokenStream to interpret.
  * 
  */
-interpreter_result_t interpret_bitwise(node* node, RuntimeError** err) {
+interpreter_result_t interpret_bitwise(node* node, Error** err) {
 
     /**
      *  AND     &
@@ -296,7 +296,7 @@ interpreter_result_t interpret_bitwise(node* node, RuntimeError** err) {
  *      TokenStream* tok_stream     -   The TokenStream to interpret.
  * 
  */
-void start_interpreter(TokenStream* tok_stream, address_space_t* usr_space, address_space_t* node_space, RuntimeError** err) {
+void start_interpreter(TokenStream* tok_stream, address_space_t* usr_space, address_space_t* node_space, Error** err) {
 
     // Parse the tok_stream to a nodearray.
     nodearray* nodes = parse(tok_stream, err);

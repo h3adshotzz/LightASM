@@ -65,7 +65,7 @@ typedef enum {
 
 
 // Interpreter functions
-void start_interpreter(TokenStream* tok_stream, address_space_t* usr_space, address_space_t* node_space, RuntimeError** err);
-
+void start_interpreter(TokenStream* tok_stream, address_space_t* usr_space, address_space_t* node_space, Error** err);
+void reset_regs();
 
 #endif

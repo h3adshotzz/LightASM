@@ -20,22 +20,18 @@
 #include "memory.h"
 
 void _tst_pge_dump(void* pge, space_type type, int memref) {
-    if (type != NULL) {
-
-        switch (type) {
-            case SPACE_TYPE_VAL:
-                printlnf("Memory Ref:                   %d", memref);
-                printlnf("Value:                        %d", (int) pge);
-                printlnf("--------------------------------------");
-                break;
+    switch (type) {
+        case SPACE_TYPE_VAL:
+            printlnf("Memory Ref:                   %d", memref);
+            printlnf("Value:                        %d", (int) pge);
+            printlnf("--------------------------------------");
+            break;
             
-            case SPACE_TYPE_NODE:
-                break;
+        case SPACE_TYPE_NODE:
+            break;
 
-            default:
-                break;
-        }
-
+        default:
+            break;
     }
 }
 
@@ -77,16 +73,11 @@ void _tst_spc_dump(address_space_t* spc) {
  */
 
 void address_space_set_ref(address_space_t* spc, int ref, int value) {
-    spc->pages[ref] = value;
+    address_space_push(spc, (void*)(long)value);
 }
 
 int address_space_get_ref(address_space_t* spc, int ref) {
-    int tmp = (int) spc->pages[ref];
-    if (tmp != NULL) {
-        return tmp;
-    } else {
-        return 0;
-    }
+    return (int)(long) spc->pages[ref];
 }
 
 int address_space_push(address_space_t* spc, void* elm) {
@@ -104,6 +95,8 @@ int address_space_push(address_space_t* spc, void* elm) {
 
         return 1;
 
+    } else {
+        return 0;
     }
 
 }
@@ -116,15 +109,15 @@ address_space_t* address_space_new(space_type type) {
 
         rt->type = SPACE_TYPE_VAL;
         rt->allocated = 128;        // We allocated 128 for the user data.
-        rt->elements = 5;           // There currently isn't anything in it. 
+        rt->elements = 0;           // There currently isn't anything in it. 
 
         rt->pages = malloc(sizeof(int) * rt->allocated);    // Allocate enough memory. 
 
-        // This is just for testing purposes.
-        rt->pages[0] = 12;
-        rt->pages[1] = 13;
-        rt->pages[2] = 14;
-        rt->pages[3] = 15;
+        /* This is just for testing purposes.
+        rt->pages[0] = (void*)(long)12;
+        rt->pages[1] = (void*)(long)13;
+        rt->pages[2] = (void*)(long)14;
+        rt->pages[3] = (void*)(long)15;*/
 
         return rt;
 
@@ -132,11 +125,13 @@ address_space_t* address_space_new(space_type type) {
 
         rt->type = SPACE_TYPE_NODE;
         rt->allocated = 10;;        // We allocate 10 for the commands.
-        rt->elements = 0;           // There currently isn't anything in it.
+        rt->elements = 5;           // There currently isn't anything in it.
 
         rt->pages = malloc(sizeof(node) * rt->allocated);
 
         return rt;
 
-    } 
+    } else {
+        return NULL;
+    }
 }

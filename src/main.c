@@ -35,13 +35,13 @@ void testing() {
     spc = address_space_new(SPACE_TYPE_VAL);
     _tst_spc_dump(spc);
 
-    address_space_push(spc, 22);
-    address_space_push(spc, 34);
-    address_space_push(spc, 12);
-    address_space_push(spc, 45);
-    address_space_push(spc, 234);
-    address_space_push(spc, 2);
-    address_space_push(spc, 44);
+    address_space_push(spc, (void*)(long)22);
+    address_space_push(spc, (void*)(long)34);
+    address_space_push(spc, (void*)(long)12);
+    address_space_push(spc, (void*)(long)45);
+    address_space_push(spc, (void*)(long)234);
+    address_space_push(spc, (void*)(long)2);
+    address_space_push(spc, (void*)(long)44);
 
 
     _tst_spc_dump(spc);

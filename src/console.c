@@ -66,7 +66,7 @@ void console_run() {
 
             TokenStream* tok_stream = token_stream_new(curline);
             
-            RuntimeError* err = NULL;
+            Error* err = NULL;
             start_interpreter(tok_stream, usr_data_space, node_data_space, &err);
 
             if (err) {
