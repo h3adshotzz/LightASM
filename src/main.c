@@ -26,25 +26,13 @@
 #include "node.h"
 
 #include "interpreter/memory.h"
+#include "repl/repl.h"
 
 void testing() {
 
     warningf("This is experimental. Crashes are expected.");
     
-    address_space_t* spc = malloc(sizeof(address_space_t));
-    spc = address_space_new(SPACE_TYPE_VAL);
-    _tst_spc_dump(spc);
-
-    address_space_push(spc, (void*)(long)22);
-    address_space_push(spc, (void*)(long)34);
-    address_space_push(spc, (void*)(long)12);
-    address_space_push(spc, (void*)(long)45);
-    address_space_push(spc, (void*)(long)234);
-    address_space_push(spc, (void*)(long)2);
-    address_space_push(spc, (void*)(long)44);
-
-
-    _tst_spc_dump(spc);
+    _repl_test();
 
 }
 

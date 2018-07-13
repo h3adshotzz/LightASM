@@ -15,7 +15,8 @@ LIB_SOURCES =							\
 	utils/error.c						\
 	interpreter/interpreter.c			\
 	interpreter/parse.c					\
-	interpreter/memory.c
+	interpreter/memory.c				\
+	repl/repl.c				
 
 TEST_SOURCES = 							\
 	main.c									
