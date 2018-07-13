@@ -135,7 +135,7 @@ interpreter_result_t interpret_arithmetic(node* node, RuntimeError** err) {
         return FAILTURE;
     }
 
-    int b = interpet_operand(opon->type, opon->value, err);
+    int b = interpret_operand(opon->type, opon->value, err);
 
     if (*err) {
         return FAILTURE;
@@ -191,7 +191,30 @@ interpreter_result_t interpret_memory(node* node, address_space_t* usr_space, Ru
 
         printlnf("Got reg state of R%d as %d. Setting memref %d", mem->reg, b, mem->mem);
         address_space_set_ref(usr_space, mem->mem, b);
-        
+
+    } else if (node->type == NTYPE_MOV) {
+
+        node_op* op = (node_op *)node->value;
+        if (*err) return FAILTURE;
+
+        if (op->type == NOP_REGISTER) {
+
+            debugf("Type is REGISTER");
+
+            int ns = get_reg_state(op->value, err);
+            if (*err) return FAILTURE;
+
+            set_new_reg_state(op->dest, ns, err);
+            if (*err) return FAILTURE;
+
+        } else {
+
+            debugf("Dest: %d\nValue: %d", op->dest, op->value);
+
+            set_new_reg_state(op->dest, op->value, err);
+            if (*err) return FAILTURE;
+
+        }
 
     }
 
@@ -233,6 +256,7 @@ void start_interpreter(TokenStream* tok_stream, address_space_t* usr_space, addr
                 break;
             case NTYPE_LDR:
             case NTYPE_STR:
+            case NTYPE_MOV:
                 interpret_memory(curr_node, usr_space, err);
         }
 
