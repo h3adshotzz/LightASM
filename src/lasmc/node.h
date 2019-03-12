@@ -17,21 +17,14 @@
  * 
 */
 
-#ifndef REPL_H
-#define REPL_H
+#ifndef NODE_H
+#define NODE_H
 
-#ifdef _WIN32
-#include <Windows.h>
-#else
-#include <unistd.h>
-#endif
+typedef enum {
 
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "../utils/log.h"
 
-void _repl_test();
+    
+}
+
 
 #endif

@@ -27,15 +27,22 @@
 #include "node.h"
 
 #include "interpreter/memory.h"
-#include "repl/repl.h"
 
-void testing() {
+static gint repeats = 2;
+static gint max_size = 8;
+static gboolean verbose = FALSE;
+static gboolean beep = FALSE;
+static gboolean randomize = FALSE;
 
-    warningf("This is experimental. Crashes are expected.");
-    
-    _repl_test();
-
-}
+static GOptionEntry entries[] =
+{
+  { "repeats", 'r', 0, G_OPTION_ARG_INT, &repeats, "Average over N repetitions", "N" },
+  { "max-size", 'm', 0, G_OPTION_ARG_INT, &max_size, "Test up to 2^M items", "M" },
+  { "verbose", 'v', 0, G_OPTION_ARG_NONE, &verbose, "Be verbose", NULL },
+  { "beep", 'b', 0, G_OPTION_ARG_NONE, &beep, "Beep when done", NULL },
+  { "rand", 0, 0, G_OPTION_ARG_NONE, &randomize, "Randomize the data", NULL },
+  { NULL }
+};
 
 
 /**
@@ -47,21 +54,6 @@ void version() {
     printf("LightASM %d.%d [%d]\n\n", AQA_ASM_MAJOR_VERSION, AQA_ASM_MINOR_VERSION, AQA_ASM_BUILD);
 }
 
-
-/**
- *  The help menu. 
- * 
- */
-void help_menu() {
-	
-    // Print usage information.
-	printf("Usage:	LightASM [OPTIONS] [FILE]...\n\n");
-	printf("Option			GNU Long Option			Meaning\n");
-	printf("-h, -?			--help				Show this message\n");
-	printf("-v			--version			Show the version and build\n");
-	printf("-a			--console			Run the Console\n");
-	
-}
 
 void dump_array(gpointer key, gpointer value, gpointer data) 
 {
@@ -82,20 +74,6 @@ void dump_array(gpointer key, gpointer value, gpointer data)
  */
 int main(int argc, const char **argv) {	
 
-#if EXPERIMENTAL_MODE
-
-printf("EXPERIMENTAL_MODE\n");
-
-GHashTable *table = g_hash_table_new(g_str_hash, g_str_equal);
-
-g_hash_table_insert(table, "hello", "world");
-g_hash_table_insert(table, "hello2", "123");
-
-g_hash_table_foreach(table, dump_array, NULL);
-
-
-#else
-
 #if DEBUG_MODE
 
     // If debug mode is active we print argc and argv
@@ -107,40 +85,53 @@ g_hash_table_foreach(table, dump_array, NULL);
     }
 #endif
 
+    GError *error = NULL;
+    GOptionContext *context;
+
+    context = g_option_context_new("- LightASM Compiler.");
+    g_option_context_add_main_entries(context, entries, NULL);
+
+    if (!g_option_context_parse(context, &argc, &argv, &error)) {
+        errorf("option parsing failed: %s\n", error->message);
+        g_critical("option parsing failed: %s\n", error->message);
+        exit (1);
+    }
+
+
+    printf("EXPERIMENTAL_MODE\n");
+
+    GHashTable *table = g_hash_table_new(g_str_hash, g_str_equal);
+
+    g_hash_table_insert(table, "hello", "world");
+    g_hash_table_insert(table, "hello2", "123");
+
+    g_hash_table_foreach(table, dump_array, NULL);
+
+
+
 	// See what we are dealing with
     // This will be replaced soon.
-    const char* main_arg = argv[1];
+    /*const char* main_arg = argv[1];
 
-#if DEBUG_MODE
-    // Again, if debug mode is active, print the main arg. 
-    printf("main arg: %s\n", main_arg);
-#endif
+    if (main_arg != NULL) goto err;
 
     /**
      *  The joy that is determaining what the user entered.
-     */
-    if (main_arg != NULL) {
-        if (!strcmp(main_arg, "-h") || !strcmp(main_arg, "--help")) {
-		    help_menu();    // This is called from menu_helper.c
-	    } else if (!strcmp(main_arg, "-v") || !strcmp(main_arg, "--version")) {
-		    version();  // This is called from menu_helper.c
-	    } else if (!strcmp(main_arg, "-a") || !strcmp(main_arg, "--console")) {
-            console_run();   // This is called from console.c
-        } else if (!strcmp(main_arg, "--dev")) {
-	        testing();
-	    } else {
-            // Oh dear.
-            errorf("Unrecognised arg[s]. Please run with -h or --help for options.\n");
-            exit(1);
-        }
+     *
+    if (!strcmp(main_arg, "-h") || !strcmp(main_arg, "--help")) {
+        help_menu();    // This is called from menu_helper.c
+    } else if (!strcmp(main_arg, "-v") || !strcmp(main_arg, "--version")) {
+        version();  // This is called from menu_helper.c
+    } else if (!strcmp(main_arg, "-a") || !strcmp(main_arg, "--console")) {
+        console_run();   // This is called from console.c
+    } else if (!strcmp(main_arg, "--dev")) {
+        testing();
     } else {
-        // Oh dear again.
-        printf("No options given. Please run with -h or --help for options.\n");
+        // Oh dear.
+        errorf("Unrecognised arg[s]. Please run with -h or --help for options.\n");
         exit(1);
-    }
+    }*/
 
-#endif
-    
-    // Return 0
     return 0;
+
 }

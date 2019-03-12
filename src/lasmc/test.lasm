@@ -1,0 +1,4 @@
+ADD R0, R1, #100
+SUB R1, R0, #25
+MOV R2, R1
+HALT
