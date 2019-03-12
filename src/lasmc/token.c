@@ -19,18 +19,17 @@
 
 #include "token.h"
 
-char *lower_string(char *s)
-{
-    int c = 0;
+static char* g_keywords[14] = {"nop", "halt", "mov", "add", "sub"};
 
-    while (s[c] != '\0') {
-        if (s[c] >= 'A' && s[c] <= 'Z') {
-            s[c] = s[c] + 32;
+int array_contains(char* val, char** arr) {
+    int i = 0;
+    while (arr[i]) {
+        if (strcmp(arr[i], val) == 0) {     // We get a BAD ACCESS if you type something that isn't a command
+            return 1;
         }
-        c++;
+        i++;
     }
-
-    return s;
+    return 0;
 }
 
 Token *token_new(char *val, char type)
@@ -88,22 +87,39 @@ Token *token_stream_next(TokenStream *stream)
     } else if (next_char == 'R' || next_char == 'r') {
 
         // Parsing register names
+        stream->position++;
+        char* str = read_string(stream, &isdigit);
+        return token_new(str, TOK_REGISTER);
 
     } else if (isalpha(next_char)) {
 
         // Parsing instruction keywords 
+        char* str = read_string(stream, &isalpha);
+
+        if (array_contains(str, g_keywords)) {
+            return token_new(str, TOK_COMMAND);
+        } else {
+            return token_new(str, TOK_LABEL);
+        }
 
     } else if (next_char == '#') {
 
         // Parsing a number
+        stream->position++;
+        char* str = read_string(stream, &isdigit);
+        return token_new(str, TOK_NUMBER);
 
     } else if (next_char == ',') {
 
         // Parsing a comma
+        stream->position++;
+        return token_new(NULL, TOK_COMMA);
 
     } else if (isdigit(next_char) && stream->source[stream->position++] == 'x') {
 
         // Parsing a memory address
+        char* str = read_string(stream, &isdigit);
+        return token_new(str, TOK_MEMORY);
 
     } else {
         return NULL;
@@ -112,5 +128,32 @@ Token *token_stream_next(TokenStream *stream)
 
 void token_dump(Token* tkn)
 {
-    // Sort this out.
+   if (!tkn) {
+        debugf("TOKEN: tkn is null");
+        return;
+    }
+
+    // Switch-case to print the Tokens type
+    switch (tkn->type) {
+        case TOK_COMMAND:
+            debugf("TOKEN: Command: %s", tkn->val);
+            break;
+        case TOK_NUMBER:
+            debugf("TOKEN: Number: %s", tkn->val);
+            break;
+        case TOK_MEMORY:
+            debugf("TOKEN: Memory: %s", tkn->val);
+            break;
+        case TOK_REGISTER:
+            debugf("TOKEN: Register: %s", tkn->val);
+            break;
+        case TOK_LABEL:
+            debugf("TOKEN: Label: %s", tkn->val);
+            break;
+        case TOK_COMMA:
+            debugf("TOKEN: Comma");
+            break;
+        default:
+            debugf("TOKEN: Unknown type");
+    }
 }

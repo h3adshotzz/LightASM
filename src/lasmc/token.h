@@ -23,6 +23,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+#include "log.h"
+
 #define TOK_COMMAND     '0'
 #define TOK_NUMBER      '1'
 #define TOK_MEMORY      '2'
@@ -46,11 +48,11 @@ typedef struct {
 
 // Token functions.
 Token* token_new(char* val, char type);
-void token_dump (Token* self);
+void token_dump (Token* tkn);
 
 // TokenStream functions.
 TokenStream* token_stream_new(char* input);
-Token* token_stream_next(TokenStream* tknstr, Error** err);
+Token* token_stream_next(TokenStream* tknstr);
 int token_stream_eof(TokenStream* tok);
 
 

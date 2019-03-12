@@ -21,6 +21,8 @@
 #include <stdio.h>
 #include <glib.h>
 
+#include "token.h"
+
 #include "consts.h"
 
 static gboolean version = false;
@@ -43,23 +45,12 @@ void dump_array(gpointer key, gpointer value, gpointer data)
     printf("Key: %s, Value: %s\n", key, value);
 }
 
-char* lower_string(char* s) {
-   int c = 0;
-   
-   while (s[c] != '\0') {
-      if (s[c] >= 'A' && s[c] <= 'Z') {
-         s[c] = s[c] + 32;
-      }
-      c++;
-   }
-
-   return s;
-}
-
 void testing(char* path)
 {
     printf("EXPERIMENTAL_MODE\n");
 
+
+    // memory testing
     GHashTable *table = g_hash_table_new(g_str_hash, g_str_equal);
 
     g_hash_table_insert(table, "hello", "world");
@@ -81,13 +72,13 @@ void testing(char* path)
 
         line = lower_string(line);
 
-        printf("Retrieved line of length %zu:\n", nread);
-        printf("Line[%d]: %s\n", nread, line);
-        
-        //
-        int num = (int)strtol(line, NULL, 16); 
-        printf("0x%X\n", num);
+        TokenStream *stream = token_stream_new(line);
+        Token* tmp = NULL;
 
+        while ((tmp = token_stream_next(stream))) {
+            token_dump(tmp);
+        }
+        debugf("-----------");
 
     }
 
