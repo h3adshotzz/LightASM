@@ -28,5 +28,6 @@
 
 // Debug mode
 #define DEBUG_MODE                  0
+#define EXPERIMENTAL_MODE           1
 
 #endif /* CONSTS_H */

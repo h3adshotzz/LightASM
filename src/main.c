@@ -18,6 +18,7 @@
 */
 
 #include <stdlib.h>
+#include <glib.h>
 
 #include "consts.h"
 #include "console.h"
@@ -62,6 +63,11 @@ void help_menu() {
 	
 }
 
+void dump_array(gpointer key, gpointer value, gpointer data) 
+{
+    printf("Key: %s, Value: %s\n", key, value);
+}
+
 
 /**
  *  The main function of all this gloriousness... maybe that's spelt right idk.
@@ -76,6 +82,19 @@ void help_menu() {
  */
 int main(int argc, const char **argv) {	
 
+#if EXPERIMENTAL_MODE
+
+printf("EXPERIMENTAL_MODE\n");
+
+GHashTable *table = g_hash_table_new(g_str_hash, g_str_equal);
+
+g_hash_table_insert(table, "hello", "world");
+g_hash_table_insert(table, "hello2", "123");
+
+g_hash_table_foreach(table, dump_array, NULL);
+
+
+#else
 
 #if DEBUG_MODE
 
@@ -119,6 +138,8 @@ int main(int argc, const char **argv) {
         printf("No options given. Please run with -h or --help for options.\n");
         exit(1);
     }
+
+#endif
     
     // Return 0
     return 0;

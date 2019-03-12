@@ -3,7 +3,7 @@ SRCDIR	= src
 OBJDIR	= obj
 
 CC		= gcc
-CFLAGS	= -g -Wall
+CFLAGS	= -g -Wall `pkg-config --libs --cflags glib-2.0`
 
 LIB_SOURCES =							\
 	token.c 							\
