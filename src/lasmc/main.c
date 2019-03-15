@@ -42,7 +42,7 @@ void show_version()
 
 void dump_array(gpointer key, gpointer value, gpointer data) 
 {
-    printf("Key: %s, Value: %s\n", key, value);
+    printf("Key: %s, Value: %s\n", (char *) key, (char *) value);
 }
 
 void testing(char* path)
@@ -101,7 +101,7 @@ void testing(char* path)
     }
 
     for (int i = 0; i < testing->len; i++) {
-        printf("Val %d: %s\n", i, g_ptr_array_index(testing, i));
+        printf("Val %d: %s\n", i, (char *) g_ptr_array_index(testing, i));
     }
 
 

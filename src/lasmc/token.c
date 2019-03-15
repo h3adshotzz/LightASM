@@ -18,23 +18,14 @@
 */
 
 #include "token.h"
+#include <glib.h>
 
-static char* g_keywords[14] = {"nop", "halt", "mov", "add", "sub"};
-
-int array_contains(char* val, char** arr) {
-    int i = 0;
-    while (arr[i]) {
-        if (strcmp(arr[i], val) == 0) {     // We get a BAD ACCESS if you type something that isn't a command
-            return 1;
-        }
-        i++;
-    }
-    return 0;
-}
+// Err you realise this is going to go bad?
+static const char* g_keywords[14] = {"nop", "halt", "mov", "add", "sub"};
 
 Token *token_new(char *val, char type)
 {
-    Token *tkn = malloc(sizeof(Token));
+    Token *tkn = g_new(Token);
 
     tkn->type = type;
     tkn->val = val;
@@ -44,7 +35,7 @@ Token *token_new(char *val, char type)
 
 TokenStream *token_stream_new(char *input)
 {
-    TokenStream *stream = malloc(sizeof(TokenStream));
+    TokenStream *stream = g_new(TokenStream, 1);
 
     stream->position = 0;
     stream->source = input;
@@ -55,7 +46,7 @@ TokenStream *token_stream_new(char *input)
 
 static char *read_string(TokenStream *stream, int (*reader)(int))
 {
-    char *str = "";
+    char *str = NULL;
     int counter = stream->position;
 
     while (stream->source[counter]) {
@@ -63,7 +54,24 @@ static char *read_string(TokenStream *stream, int (*reader)(int))
         char curr = stream->source[counter];
 
         if (reader(curr)) {
-            str = chrappend(str, curr);
+            char buf[2];
+            char *tmp = NULL;
+
+            buf[0] = curr;
+            buf[1] = '\0';
+
+            if (str) {
+                tmp = g_strconcat (str, buf, NULL);
+
+                // g_strconcat/g_strdup allocate heap memory
+                // we must free the memory when done with it
+                // to prevent leaks
+                g_free (str);
+            } else {
+                tmp = g_strdup(buf);
+            }
+
+            str = tmp;
         } else {
             break;
         }
@@ -96,7 +104,7 @@ Token *token_stream_next(TokenStream *stream)
         // Parsing instruction keywords 
         char* str = read_string(stream, &isalpha);
 
-        if (array_contains(str, g_keywords)) {
+        if (g_strv_contains(g_keywords, str)) {
             return token_new(str, TOK_COMMAND);
         } else {
             return token_new(str, TOK_LABEL);
