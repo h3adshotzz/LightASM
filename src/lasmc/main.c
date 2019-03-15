@@ -68,6 +68,9 @@ void testing(char* path)
         exit(EXIT_FAILURE);
     }
 
+    //
+    GPtrArray* ptr = g_ptr_array_new();
+
     while ((nread = getline(&line, &len, file)) != -1) {
 
         line = lower_string(line);
@@ -76,11 +79,31 @@ void testing(char* path)
         Token* tmp = NULL;
 
         while ((tmp = token_stream_next(stream))) {
-            token_dump(tmp);
+            g_ptr_array_add(ptr, (gpointer) tmp);
         }
         debugf("-----------");
 
     }
+
+    printf("Size: %d\n", ptr->len);
+
+    // print the array.
+    for (int i = 0; i < ptr->len; i++) {
+        token_dump((Token*) g_ptr_array_index(ptr, i));
+    }
+
+
+    /// other testing
+    GPtrArray *testing = g_ptr_array_new();
+    for (int i = 0; i < 10; i++) {
+        char* str = "Hello";
+        g_ptr_array_add(testing, (gpointer)str);
+    }
+
+    for (int i = 0; i < testing->len; i++) {
+        printf("Val %d: %s\n", i, g_ptr_array_index(testing, i));
+    }
+
 
     free(line);
     fclose(file);
