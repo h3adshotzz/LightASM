@@ -21,7 +21,7 @@
 #define TOKEN_H
 
 #include <stdlib.h>
-#include <ctype.h>
+#include <gio/gio.h>
 
 #include "log.h"
 
@@ -40,8 +40,9 @@ typedef struct {
 
 
 typedef struct { 
-    size_t position;    // To determain where in the string (source) we are
-    char* source;       // The users input, what we are token...ing
+    GDataInputStream *source;       // The users input, what we are token...ing
+    char *line;           // Current line read from input
+    char *curr;           // Current position in line
     Token* cache;       // Token cache
 } TokenStream;
 
@@ -51,7 +52,7 @@ Token* token_new(char* val, char type);
 void token_dump (Token* tkn);
 
 // TokenStream functions.
-TokenStream* token_stream_new(char* input);
+TokenStream* token_stream_new(GInputStream *input);
 Token* token_stream_next(TokenStream* tknstr);
 int token_stream_eof(TokenStream* tok);
 

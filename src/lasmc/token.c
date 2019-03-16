@@ -19,13 +19,14 @@
 
 #include "token.h"
 #include <glib.h>
+#include <gio/gio.h>
 
 // Err you realise this is going to go bad?
 static const char* g_keywords[14] = {"nop", "halt", "mov", "add", "sub"};
 
 Token *token_new(char *val, char type)
 {
-    Token *tkn = g_new(Token);
+    Token *tkn = g_new (Token, 1);
 
     tkn->type = type;
     tkn->val = val;
@@ -33,32 +34,94 @@ Token *token_new(char *val, char type)
     return tkn;
 }
 
-TokenStream *token_stream_new(char *input)
+TokenStream *token_stream_new(GInputStream *input)
 {
+    g_return_val_if_fail (G_IS_INPUT_STREAM (input), NULL);
+
     TokenStream *stream = g_new(TokenStream, 1);
 
-    stream->position = 0;
-    stream->source = input;
+    stream->source = g_data_input_stream_new (input);
     stream->cache = NULL;
+    stream->line = NULL;
+    stream->curr = NULL;
 
     return stream;
 }
 
-static char *read_string(TokenStream *stream, int (*reader)(int))
+static gboolean
+read_line (TokenStream *self)
+{
+    GError *error = NULL;
+
+    if (self->line)
+        g_free (self->line);
+
+    gchar *read = g_data_input_stream_read_line_utf8 (self->source,
+                                                      NULL, NULL, &error);
+
+    self->line = g_strconcat (read, "\n", NULL);
+    self->curr = self->line;
+
+    g_free (read);
+
+    if (error) {
+        g_critical ("Failed to read input: %s", error->message);
+        return FALSE;
+    }
+
+    if (!self->line)
+        return FALSE;
+
+    return TRUE;
+}
+
+static gboolean
+peek_char (TokenStream *self, gunichar *c)
+{
+    if ((!self->curr || !g_utf8_get_char (self->curr)) && !read_line (self)) {
+        return FALSE;
+    }
+
+    if (c)
+        *c = g_utf8_get_char (self->curr);
+
+    return TRUE;
+}
+
+static gboolean
+next_char (TokenStream *self, gunichar *c)
+{
+    if ((!self->curr || !g_utf8_get_char (self->curr)) && !read_line (self)) {
+        return FALSE;
+    }
+    
+    if (!self->curr)
+        return FALSE;
+
+    if (c)
+        *c = g_utf8_get_char (self->curr);
+
+    self->curr = g_utf8_next_char (self->curr);
+
+    return TRUE;
+}
+
+static char *read_string(TokenStream *stream, int (reader)(gunichar))
 {
     char *str = NULL;
-    int counter = stream->position;
+    gunichar curr;
 
-    while (stream->source[counter]) {
-
-        char curr = stream->source[counter];
-
+    while (peek_char (stream, &curr)) {
         if (reader(curr)) {
-            char buf[2];
+            int len;
+            char *buf = NULL;
             char *tmp = NULL;
 
-            buf[0] = curr;
-            buf[1] = '\0';
+            len = g_unichar_to_utf8 (curr, NULL);
+
+            buf = g_malloc (len);
+            g_unichar_to_utf8 (curr, buf);
+            buf[len] = '\0';
 
             if (str) {
                 tmp = g_strconcat (str, buf, NULL);
@@ -71,62 +134,71 @@ static char *read_string(TokenStream *stream, int (*reader)(int))
                 tmp = g_strdup(buf);
             }
 
+            g_free (buf);
+
             str = tmp;
         } else {
             break;
         }
 
-        counter++;
+        next_char (stream, NULL);
     }
-
-    stream->position = counter;
 
     return str;
 }
 
+static gboolean
+label (gunichar c)
+{
+    return c != ':';
+}
+
 Token *token_stream_next(TokenStream *stream)
 {
-    read_string(stream, &isspace);
+    read_string (stream, g_unichar_isspace);
 
-    char next_char = stream->source[stream->position];
+    gunichar next;
 
-    if (!next_char) {
+    if (!peek_char (stream, &next)) {
         return NULL;
-    } else if (next_char == 'R' || next_char == 'r') {
+    }
+
+    if (next == 'R' || next == 'r') {
 
         // Parsing register names
-        stream->position++;
-        char* str = read_string(stream, &isdigit);
+        next_char (stream, NULL);
+        char* str = read_string (stream, g_unichar_isdigit);
         return token_new(str, TOK_REGISTER);
 
-    } else if (isalpha(next_char)) {
+    } else if (g_unichar_isalpha(next)) {
 
         // Parsing instruction keywords 
-        char* str = read_string(stream, &isalpha);
+        char* str = read_string (stream, label);
+        char* lower = g_utf8_strdown (str, -1);
 
-        if (g_strv_contains(g_keywords, str)) {
-            return token_new(str, TOK_COMMAND);
+        if (g_strv_contains (g_keywords, lower)) {
+            return token_new (lower, TOK_COMMAND);
         } else {
             return token_new(str, TOK_LABEL);
         }
 
-    } else if (next_char == '#') {
+    } else if (next == '#') {
 
         // Parsing a number
-        stream->position++;
-        char* str = read_string(stream, &isdigit);
+        next_char (stream, NULL);
+        char* str = read_string (stream, g_unichar_isdigit);
         return token_new(str, TOK_NUMBER);
 
-    } else if (next_char == ',') {
+    } else if (next == ',') {
 
         // Parsing a comma
-        stream->position++;
+        next_char (stream, NULL);
         return token_new(NULL, TOK_COMMA);
 
-    } else if (isdigit(next_char) && stream->source[stream->position++] == 'x') {
+    } else if (g_unichar_isdigit (next)) {
 
         // Parsing a memory address
-        char* str = read_string(stream, &isdigit);
+        char* str = read_string (stream, g_unichar_isdigit);
         return token_new(str, TOK_MEMORY);
 
     } else {
