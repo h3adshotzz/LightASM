@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <glib.h>
+#include <gio/gio.h>
 
 #include "token.h"
 
@@ -42,7 +43,7 @@ void show_version()
 
 void dump_array(gpointer key, gpointer value, gpointer data) 
 {
-    printf("Key: %s, Value: %s\n", key, value);
+    printf("Key: %s, Value: %s\n", (char *) key, (char *) value);
 }
 
 void testing(char* path)
@@ -58,31 +59,24 @@ void testing(char* path)
 
     g_hash_table_foreach(table, dump_array, NULL);
 
-    char *line;
-    size_t len = 0;
-    ssize_t nread;
+    GFile *file = g_file_new_for_commandline_arg (path);
+    
+    GError *error = NULL;
+    GFileInputStream *input = g_file_read (file, NULL, &error);
 
-    FILE *file = fopen(path, "r");
-    if (file == NULL) {
-        perror("fopen");
+    if (error) {
+        g_critical ("%s", error->message);
         exit(EXIT_FAILURE);
     }
+
+    TokenStream *stream = token_stream_new (G_INPUT_STREAM (input));
+    Token* tmp = NULL;
 
     //
     GPtrArray* ptr = g_ptr_array_new();
 
-    while ((nread = getline(&line, &len, file)) != -1) {
-
-        line = lower_string(line);
-
-        TokenStream *stream = token_stream_new(line);
-        Token* tmp = NULL;
-
-        while ((tmp = token_stream_next(stream))) {
-            g_ptr_array_add(ptr, (gpointer) tmp);
-        }
-        debugf("-----------");
-
+    while ((tmp = token_stream_next(stream))) {
+        g_ptr_array_add(ptr, (gpointer) tmp);
     }
 
     printf("Size: %d\n", ptr->len);
@@ -97,17 +91,12 @@ void testing(char* path)
     GPtrArray *testing = g_ptr_array_new();
     for (int i = 0; i < 10; i++) {
         char* str = "Hello";
-        g_ptr_array_add(testing, (gpointer)str);
+        g_ptr_array_add(testing, str);
     }
 
     for (int i = 0; i < testing->len; i++) {
-        printf("Val %d: %s\n", i, g_ptr_array_index(testing, i));
+        printf("Val %d: %s\n", i, (char *) g_ptr_array_index(testing, i));
     }
-
-
-    free(line);
-    fclose(file);
-    
 }
 
 int main(int argc, char** argv)

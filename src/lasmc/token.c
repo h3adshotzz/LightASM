@@ -18,23 +18,15 @@
 */
 
 #include "token.h"
+#include <glib.h>
+#include <gio/gio.h>
 
-static char* g_keywords[14] = {"nop", "halt", "mov", "add", "sub"};
-
-int array_contains(char* val, char** arr) {
-    int i = 0;
-    while (arr[i]) {
-        if (strcmp(arr[i], val) == 0) {     // We get a BAD ACCESS if you type something that isn't a command
-            return 1;
-        }
-        i++;
-    }
-    return 0;
-}
+// Err you realise this is going to go bad?
+static const char* g_keywords[14] = {"nop", "halt", "mov", "add", "sub"};
 
 Token *token_new(char *val, char type)
 {
-    Token *tkn = malloc(sizeof(Token));
+    Token *tkn = g_new (Token, 1);
 
     tkn->type = type;
     tkn->val = val;
@@ -42,83 +34,171 @@ Token *token_new(char *val, char type)
     return tkn;
 }
 
-TokenStream *token_stream_new(char *input)
+TokenStream *token_stream_new(GInputStream *input)
 {
-    TokenStream *stream = malloc(sizeof(TokenStream));
+    g_return_val_if_fail (G_IS_INPUT_STREAM (input), NULL);
 
-    stream->position = 0;
-    stream->source = input;
+    TokenStream *stream = g_new(TokenStream, 1);
+
+    stream->source = g_data_input_stream_new (input);
     stream->cache = NULL;
+    stream->line = NULL;
+    stream->curr = NULL;
 
     return stream;
 }
 
-static char *read_string(TokenStream *stream, int (*reader)(int))
+static gboolean
+read_line (TokenStream *self)
 {
-    char *str = "";
-    int counter = stream->position;
+    GError *error = NULL;
 
-    while (stream->source[counter]) {
+    if (self->line)
+        g_free (self->line);
 
-        char curr = stream->source[counter];
+    gchar *read = g_data_input_stream_read_line_utf8 (self->source,
+                                                      NULL, NULL, &error);
 
+    self->line = g_strconcat (read, "\n", NULL);
+    self->curr = self->line;
+
+    g_free (read);
+
+    if (error) {
+        g_critical ("Failed to read input: %s", error->message);
+        return FALSE;
+    }
+
+    if (!self->line)
+        return FALSE;
+
+    return TRUE;
+}
+
+static gboolean
+peek_char (TokenStream *self, gunichar *c)
+{
+    if ((!self->curr || !g_utf8_get_char (self->curr)) && !read_line (self)) {
+        return FALSE;
+    }
+
+    if (c)
+        *c = g_utf8_get_char (self->curr);
+
+    return TRUE;
+}
+
+static gboolean
+next_char (TokenStream *self, gunichar *c)
+{
+    if ((!self->curr || !g_utf8_get_char (self->curr)) && !read_line (self)) {
+        return FALSE;
+    }
+    
+    if (!self->curr)
+        return FALSE;
+
+    if (c)
+        *c = g_utf8_get_char (self->curr);
+
+    self->curr = g_utf8_next_char (self->curr);
+
+    return TRUE;
+}
+
+static char *read_string(TokenStream *stream, int (reader)(gunichar))
+{
+    char *str = NULL;
+    gunichar curr;
+
+    while (peek_char (stream, &curr)) {
         if (reader(curr)) {
-            str = chrappend(str, curr);
+            int len;
+            char *buf = NULL;
+            char *tmp = NULL;
+
+            len = g_unichar_to_utf8 (curr, NULL);
+
+            buf = g_malloc (len);
+            g_unichar_to_utf8 (curr, buf);
+            buf[len] = '\0';
+
+            if (str) {
+                tmp = g_strconcat (str, buf, NULL);
+
+                // g_strconcat/g_strdup allocate heap memory
+                // we must free the memory when done with it
+                // to prevent leaks
+                g_free (str);
+            } else {
+                tmp = g_strdup(buf);
+            }
+
+            g_free (buf);
+
+            str = tmp;
         } else {
             break;
         }
 
-        counter++;
+        next_char (stream, NULL);
     }
-
-    stream->position = counter;
 
     return str;
 }
 
+static gboolean
+label (gunichar c)
+{
+    return c != ':';
+}
+
 Token *token_stream_next(TokenStream *stream)
 {
-    read_string(stream, &isspace);
+    read_string (stream, g_unichar_isspace);
 
-    char next_char = stream->source[stream->position];
+    gunichar next;
 
-    if (!next_char) {
+    if (!peek_char (stream, &next)) {
         return NULL;
-    } else if (next_char == 'R' || next_char == 'r') {
+    }
+
+    if (next == 'R' || next == 'r') {
 
         // Parsing register names
-        stream->position++;
-        char* str = read_string(stream, &isdigit);
+        next_char (stream, NULL);
+        char* str = read_string (stream, g_unichar_isdigit);
         return token_new(str, TOK_REGISTER);
 
-    } else if (isalpha(next_char)) {
+    } else if (g_unichar_isalpha(next)) {
 
         // Parsing instruction keywords 
-        char* str = read_string(stream, &isalpha);
+        char* str = read_string (stream, label);
+        char* lower = g_utf8_strdown (str, -1);
 
-        if (array_contains(str, g_keywords)) {
-            return token_new(str, TOK_COMMAND);
+        if (g_strv_contains (g_keywords, lower)) {
+            return token_new (lower, TOK_COMMAND);
         } else {
             return token_new(str, TOK_LABEL);
         }
 
-    } else if (next_char == '#') {
+    } else if (next == '#') {
 
         // Parsing a number
-        stream->position++;
-        char* str = read_string(stream, &isdigit);
+        next_char (stream, NULL);
+        char* str = read_string (stream, g_unichar_isdigit);
         return token_new(str, TOK_NUMBER);
 
-    } else if (next_char == ',') {
+    } else if (next == ',') {
 
         // Parsing a comma
-        stream->position++;
+        next_char (stream, NULL);
         return token_new(NULL, TOK_COMMA);
 
-    } else if (isdigit(next_char) && stream->source[stream->position++] == 'x') {
+    } else if (g_unichar_isdigit (next)) {
 
         // Parsing a memory address
-        char* str = read_string(stream, &isdigit);
+        char* str = read_string (stream, g_unichar_isdigit);
         return token_new(str, TOK_MEMORY);
 
     } else {

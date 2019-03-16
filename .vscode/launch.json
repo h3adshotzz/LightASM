@@ -8,13 +8,13 @@
             "name": "(lldb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/obj/lightasmcore_test",
-            "args": ["--console"],
+            "program": "${workspaceFolder}/src/lasmc/lasmc",
+            "args": ["test.lasm"],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/src/lasmc/",
             "environment": [],
-            "externalConsole": true,
-            "MIMode": "lldb"
+            "externalConsole": false,
+            "MIMode": "gdb"
         }
     ]
 }
