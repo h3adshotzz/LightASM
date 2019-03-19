@@ -25,13 +25,14 @@
 
 #include "log.h"
 
-#define TOK_COMMAND     '0'
-#define TOK_NUMBER      '1'
-#define TOK_MEMORY      '2'
-#define TOK_REGISTER    '3'
-#define TOK_LABEL       '4'
-#define TOK_COMMA       '5'
-
+typedef enum {
+    TOK_COMMAND,
+    TOK_NUMBER,
+    TOK_MEMORY,
+    TOK_REGISTER,
+    TOK_LABEL,
+    TOK_COMMA,
+} token_type;
 
 typedef struct {
     char* val;      // String contents of token

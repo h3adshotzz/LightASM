@@ -32,7 +32,7 @@ typedef enum {
 
 typedef enum {
     NOP_REGISTER,
-    NOP_LITERAL
+    NOP_IMMEDIATE
 } node_op_type;
 
 typedef enum {
@@ -43,51 +43,53 @@ typedef enum {
     NCOND_LESS
 } node_condition_type;
 
+/**
+ * Register number
+ * 
+ * Only 4bits are available to store the register number by
+ * C doesn't allow us to operate on less than 8bits
+ */
+typedef char reg;
 
 /////////////
 
 typedef struct {
-    int reg;
-    int mem;
-} node_mem;
-
-typedef struct {
-    int dest;
-    node_op_type type;
-    int value;
+    reg          dest;         // Register
+    node_op_type type;         // Register or immediate
+    int          value;        // Regsister, memory address (16 bit) or number to encode
 } node_op;
 
 typedef struct {
-    int dest;               // First reg
-    int source;             // Seccond reg
-    node_op_type type;      // Num or reg
-    int value;              // Number?
-
+    node_op op;
+    reg     source;            // Second reg
 } node_op_on;
-
-typedef struct {
-    char* target;
-    node_condition_type cond;
-} node_b;
-
 
 ///////
 
 typedef struct {
-    node_type type;
-    /*union value {
-        node_op op;
-        node_op_on op_on;
-        node_b b;
+    node_type type;            // Type of node (MOV, ADD...)
+    node_condition_type cond;  // Condition for executing this instruction
+    union {                    // Use a union to reduce memory usage
+        node_op op;            // Holds a register and an operand
+        node_op_on op_on;      // Holds two registers and an operand
+        char* target;          // Label this instuction targets
     } value;
-    //int mem_ref;*/
-    gpointer* val;
 } node;
 
 
 ////
-node* node_new(node_type type, gpointer* value);
-
+node* node_new        (node_type            type,
+                       node_condition_type  cond);
+node* node_new_op     (node_type            type,
+                       node_condition_type  cond,
+                       node_op              op);
+node* node_new_op_on  (node_type            type,
+                       node_condition_type  cond,
+                       node_op_on           op_on);
+node* node_new_target (node_type            type,
+                       node_condition_type  cond,
+                       char                *target);
+void  node_dump       (node                *self);
 
 
 #endif

@@ -148,9 +148,9 @@ static char *read_string(TokenStream *stream, int (reader)(gunichar))
 }
 
 static gboolean
-label (gunichar c)
+label_or_command (gunichar c)
 {
-    return c != ':';
+    return c != ':' && !g_unichar_isspace(c);
 }
 
 Token *token_stream_next(TokenStream *stream)
@@ -173,13 +173,17 @@ Token *token_stream_next(TokenStream *stream)
     } else if (g_unichar_isalpha(next)) {
 
         // Parsing instruction keywords 
-        char* str = read_string (stream, label);
+        char* str = read_string (stream, label_or_command);
         char* lower = g_utf8_strdown (str, -1);
 
         if (g_strv_contains (g_keywords, lower)) {
             return token_new (lower, TOK_COMMAND);
         } else {
-            return token_new(str, TOK_LABEL);
+            gunichar colon;
+            next_char (stream, &colon);
+            if (colon != ':')
+                return NULL;
+            return token_new (str, TOK_LABEL);
         }
 
     } else if (next == '#') {

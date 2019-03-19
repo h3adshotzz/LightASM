@@ -23,8 +23,9 @@
 #include <gio/gio.h>
 
 #include "token.h"
-
+#include "parser.h"
 #include "consts.h"
+#include "node.h"
 
 static gboolean version = false;
 static gboolean debug = false;
@@ -74,6 +75,11 @@ void testing(char* path)
 
     //
     GPtrArray* ptr = g_ptr_array_new();
+
+    GPtrArray* nodes = parse (stream, table);
+    for (int i = 0; i < nodes->len; i++) {
+        node_dump ((node*) g_ptr_array_index (nodes, i));
+    }
 
     while ((tmp = token_stream_next(stream))) {
         g_ptr_array_add(ptr, (gpointer) tmp);

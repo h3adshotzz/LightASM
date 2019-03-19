@@ -19,11 +19,6 @@
 
 #include "node.h"
 
-void node_dump(node* node)
-{
-
-}
-
 GPtrArray* node_ptrarray_new()
 {
     return g_ptr_array_new();
@@ -34,12 +29,74 @@ void node_ptrarray_push(GPtrArray* arr, node* node)
     g_ptr_array_add(arr, (gpointer) node);
 }
 
-node* node_new(node_type type, gpointer* value)
+/**
+ * Node for an instruction that has no associated values
+ * 
+ * i.e. HALT
+ */
+node* node_new (node_type type, node_condition_type cond)
 {
     node* node = malloc(sizeof(node));
 
     node->type = type;
-    node->val = value;
+    node->cond = cond;
 
     return node;
+}
+
+/**
+ * Node that holds a register and an operand
+ * 
+ * i.e. MOV, STR
+ */
+node *
+node_new_op (node_type type, node_condition_type cond, node_op op)
+{
+    node* node = malloc(sizeof(node));
+
+    node->type = type;
+    node->cond = cond;
+    node->value.op = op;
+
+    return node;
+}
+
+/**
+ * Node that holds two registers and an operand
+ * 
+ * Largly used for arithmetic, i.e. ADD, SUB
+ */
+node *
+node_new_op_on (node_type type, node_condition_type cond, node_op_on op_on)
+{
+    node* node = malloc(sizeof(node));
+
+    node->type = type;
+    node->cond = cond;
+    node->value.op_on = op_on;
+
+    return node;
+}
+
+/**
+ * Node that targets a label
+ * 
+ * i.e. B
+ */
+node *
+node_new_target (node_type type, node_condition_type cond, char* target)
+{
+    node* node = malloc(sizeof(node));
+
+    node->type = type;
+    node->cond = cond;
+    node->value.target = g_strdup (target);
+
+    return node;
+}
+
+void
+node_dump (node *self)
+{
+    g_print ("NODE: %i[%i]\n", self->type, self->cond);
 }
