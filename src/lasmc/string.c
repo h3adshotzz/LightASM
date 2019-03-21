@@ -17,20 +17,10 @@
  * 
 */
 
-#include "string.h"
+#include <stdlib.h>
+#include <string.h>
 
-char* lower_string(char* s) {
-   int c = 0;
-   
-   while (s[c] != '\0') {
-      if (s[c] >= 'A' && s[c] <= 'Z') {
-         s[c] = s[c] + 32;
-      }
-      c++;
-   }
-
-   return s;
-}
+#include "str.h"
 
 /**
  *  Append the "string" b to a
