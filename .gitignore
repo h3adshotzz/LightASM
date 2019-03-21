@@ -1,3 +1,2 @@
-obj/
-src/lasmc/lasmc.dSYM
-src/lasmc/lasmc
+.vscode/ipch
+build/
